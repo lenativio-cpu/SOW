@@ -501,7 +501,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);min-h
 <script type="module">
 import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import{getFirestore,doc,getDoc,setDoc,onSnapshot}from'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-const FB={apiKey:"COLE_AQUI",authDomain:"COLE_AQUI",projectId:"COLE_AQUI",storageBucket:"COLE_AQUI",messagingSenderId:"COLE_AQUI",appId:"COLE_AQUI"};
+const FB={apiKey:"AIzaSyBw0pvNVVZ3hN5wQ5Fx5EP71I17fW3aB0o",authDomain:"sow-dashboard.firebaseapp.com",projectId:"sow-dashboard",storageBucket:"sow-dashboard.firebasestorage.app",messagingSenderId:"515149889940",appId:"1:515149889940:web:18226ec54b91f3a5298f81"};
 
 const TDEFS=[
   // ── Quitanda Escolas — Diagnóstico Interno ────────────────────────────────
@@ -568,7 +568,7 @@ function toast(msg){
 async function init(){
   try{
     const app=initializeApp(FB);db=getFirestore(app);sync('connecting');
-    const ref=doc(db,'brux','dashboard');
+    const ref=doc(db,'sow','dashboard');
     const snap=await getDoc(ref);
     if(!snap.exists()){S=fresh();await setDoc(ref,S);}
     else{
@@ -637,7 +637,7 @@ function fresh(){
 
 async function save(msg){
   if(!db)return;sync('saving');S._ts=Date.now();
-  try{await setDoc(doc(db,'brux','dashboard'),S);sync('live');if(msg)toast(msg);}
+  try{await setDoc(doc(db,'sow','dashboard'),S);sync('live');if(msg)toast(msg);}
   catch(e){sync('error');toast('Erro ao salvar');}
 }
 
