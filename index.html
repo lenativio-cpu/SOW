@@ -153,6 +153,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);min-h
 .tab-view{font-size:12px;color:var(--tx3);padding:10px 12px;}
 .tab-view.act{color:var(--tx2);font-weight:500;}
 .tab-view.act::after{background:var(--bds);}
+.act-q{color:var(--n);font-weight:600;}
+.act-q::after{background:var(--n);}
 
 /* ── alerts ───────────────────────────────────────────────────────────────── */
 .alert{border-radius:var(--rads);padding:11px 40px 11px 13px;margin-bottom:8px;font-size:13px;line-height:1.5;border:0.5px solid;position:relative;}
@@ -597,7 +599,7 @@ async function init(){
       // (they were copied from old DA defaults and are now shown via buildMsCard instead)
       if(!S._alertsCleaned){
         const msPatterns=['Milestone','milestone','17/04','29/04','Agendar entrevistas','03/04','13/04','14/04','Abraço Brasileiro','Reunião interna','Milestone final','AGORA'];
-        ['n','r',...(S.customProjects||[]).map(p=>p.id)].forEach(function(proj){
+        ['q',...(S.customProjects||[]).map(p=>p.id)].forEach(function(proj){
           if(Array.isArray((S.projectAlerts||{})[proj])){
             const before=S.projectAlerts[proj].length;
             S.projectAlerts[proj]=S.projectAlerts[proj].filter(function(a){
@@ -704,14 +706,13 @@ function parseMsDate(dateStr){
 // Fixed Natura/Riachuelo milestones are migrated in on init
 function getProjMeta(projId){
   if(projId==='q')return{color:'#2A6B6B',label:'Quitanda Escolas'};
-  if(projId==='_x')return{color:'#534AB7',label:'Riachuelo'};
   const cp=(S.customProjects||[]).find(p=>p.id===projId);
   return cp?{color:cp.color||'#888',label:cp.name}:null;
 }
 
 function getAllMilestones(){
   const ms=[];
-  const allProjIds=['n','r',...(S.customProjects||[]).map(p=>p.id)];
+  const allProjIds=['q',...(S.customProjects||[]).map(p=>p.id)];
   for(const projId of allProjIds){
     const meta=getProjMeta(projId);
     if(!meta)continue;
@@ -750,13 +751,12 @@ function render(){
 }
 
 function buildHTML(){
-  const bN=calcBar(NP,'q'),bR=calcBar(NP,'q');
-  const nat=projTasks('q'),ria=projTasks('q');
+  const bN=calcBar(NP,'q');
+  const nat=projTasks('q');
   const natP=nat.filter(t=>!t.done),natD=nat.filter(t=>t.done);
-  const riaP=ria.filter(t=>!t.done),riaD=ria.filter(t=>t.done);
   const allMs=getAllMilestones();
   const hidden=Array.isArray(S.hiddenProps)?S.hiddenProps:[];
-  const fixedProps=[{key:'ilha-zerezes',name:'Ilha Zerezes'},{key:'grupo-raizes',name:'Projeto Grupo Raízes'}].filter(p=>!hidden.includes(p.key));
+  const fixedProps=[];
   const allProps=[...fixedProps,...(S.customProps||[])];
 
   // thermo strip
@@ -781,7 +781,7 @@ function buildHTML(){
   const tabs='<div class="tabs-wrap"><div class="tabs-nav">'
     +'<div class="tabs-projects">'
     +'<button class="tab '+(V==='all'?'act':'')+'" onclick="B.sv(\'all\')">Visão geral</button>'
-    +'<button class="tab '+(V==='q'?'act-n':'')+'" onclick="B.sv(\'n\')">🏫 Quitanda Escolas</button>'
+    +'<button class="tab '+(V==='q'?'act-q':'')+'" style="'+(V==='q'?'color:#2A6B6B;border-bottom-color:#2A6B6B;':'')+'" onclick="B.sv(\'q\')">🏫 Quitanda Escolas</button>'
     
     +customTabsHTML
     +'</div>'
@@ -795,7 +795,7 @@ function buildHTML(){
     +'</div></div>'
 
   // overview
-  const overview=buildOverview(nat,ria,allMs);
+  const overview=buildOverview(nat,nat,allMs);
 
   // project views
   const views='<div>'
@@ -872,7 +872,7 @@ function buildOverview(nat,ria,allMs){
   function taskRow(t){
     const proj=t.p||t.proj;
     const cp=(S.customProjects||[]).find(p=>p.id===proj);
-    const projLabel=proj==='q'?'Quitanda':proj==='q'?'Riachuelo':(cp?cp.name:proj);
+    const projLabel=proj==='q'?'Quitanda':(cp?cp.name:proj);
     const stKey=(S.taskStatus||{})[t.id]||'and';
     const stObj=SM[stKey]||SM.and;
     const cmtCount=((S.taskComments||{})[t.id]||[]).length;
@@ -900,8 +900,7 @@ function buildOverview(nat,ria,allMs){
     +(weekTasks.length?weekTasks.slice(0,6).map(taskRow).join(''):'<p class="empty" style="padding:8px 0">Tudo em dia!</p>')
     +'</div></div>'
     +'<div class="add-bar">'
-    +'<button class="add-btn add-btn-q" onclick="B.openAddTask(\'q\')">+ tarefa Natura</button>'
-    +'<button class="add-btn add-btn-q" onclick="B.openAddTask(\'q\')">+ tarefa Riachuelo</button>'
+    +'<button class="add-btn add-btn-q" onclick="B.openAddTask(\'q\')">+ tarefa</button>'
     +'</div>';
 }
 
@@ -1039,7 +1038,7 @@ function buildTask(task){
   const cp=(S.customProjects||[]).find(p=>p.id===proj);
   const pillCls=proj==='q'?'pill-n':proj==='q'?'pill-r':'';
   const pillSt=cp?'background:'+cp.color+'22;color:'+cp.color+';':'';
-  const projLabel=proj==='q'?'Quitanda':proj==='q'?'Riachuelo':(cp?cp.name:proj);
+  const projLabel=proj==='q'?'Quitanda':(cp?cp.name:proj);
   let badge='';
   if(task.milestone&&!done)badge='<span class="pill pill-red">milestone</span>';
   else if(task.pri===0&&!done)badge='<span class="pill pill-red">crítico</span>';
@@ -1271,7 +1270,7 @@ function parseDate(str){
  */
 function normalizeMilestones(){
   const items=[];
-  const allProjIds=['n','r',...(S.customProjects||[]).map(p=>p.id)];
+  const allProjIds=['q',...(S.customProjects||[]).map(p=>p.id)];
   for(const projId of allProjIds){
     for(const m of(S.projectMilestones||{})[projId]||[]){
       if(!m.label||!m.date)continue;
@@ -1297,7 +1296,7 @@ function normalizeMilestones(){
  */
 function normalizeTasks(){
   const items=[];
-  const validProjs=new Set(['n','r',...(S.customProjects||[]).map(p=>p.id)]);
+  const validProjs=new Set(['q',...(S.customProjects||[]).map(p=>p.id)]);
 
   // Fixed task definitions
   for(const t of TDEFS){
@@ -1346,7 +1345,7 @@ function normalizeTasks(){
 function normalizeBlocks(){
   const items=[];
   const blocks=S.projectBlocks||{};
-  const allProjIds=['n','r',...(S.customProjects||[]).map(p=>p.id)];
+  const allProjIds=['q',...(S.customProjects||[]).map(p=>p.id)];
   for(const projId of allProjIds){
     for(const b of(blocks[projId]||[])){
       if(!b.id||!b.name)continue;
@@ -1402,7 +1401,6 @@ function buildTimeline(allMs){
   /* Project list */
   var PROJ=[
     {id:'q',label:'Quitanda Escolas',color:'#2A6B6B'},
-    {id:'_x',label:'Riachuelo',color:'#534AB7'},
   ];
   (S.customProjects||[]).forEach(function(p){
     PROJ.push({id:p.id,label:p.name,color:p.color||'#888'});
@@ -1848,9 +1846,9 @@ B.archiveProject=async function(id){
   await save('Projeto arquivado');render();
 };
 B.archiveFixed=async function(proj){
-  const name=proj==='q'?'Quitanda Escolas':'Riachuelo';
-  const emoji=proj==='q'?'🌿':'✦';
-  const color=proj==='q'?'#0F6E56':'#533AB7';
+  const name='Quitanda Escolas';
+  const emoji='🏫';
+  const color='#2A6B6B';
   if(!confirm('Arquivar "'+name+'"? Você poderá restaurar depois.'))return;
   doArchive(proj,name,emoji,color,true);
   await save('Projeto arquivado');render();
