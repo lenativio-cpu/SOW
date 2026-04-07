@@ -540,6 +540,14 @@ const NP=[
 ];
 const RP=[];
 const DA={q:[]};  // alerts removed — milestones shown via buildMsCard
+const QP=[
+  {id:'E1',label:'E1: Diagnóstico'},
+  {id:'E2',label:'E2: Escuta Externa, Interna e Alunos'},
+  {id:'E3',label:'E3: Análise e Estratégia'},
+  {id:'E4',label:'E4: WS Estratégico'},
+  {id:'E5',label:'E5: Consolidação e Diretrizes'},
+  {id:'MA',label:'MA: Módulo Alunos'},
+];
 const PC=['#0F6E56','#533AB7','#A32D2D','#854F0B','#185FA5','#993556','#3B6D11','#D85A30'];
 const PE=['🎯','🚀','💡','⚡','🌟','🎨','📐','🔥','💍','💎','⚙️','💻','🏗️','📊','🌿','✦','🎪','🧠','💼','🎬','🔬','📱','🏢','🌎','🤝','📣','🎓','💰','🛠️','🎭'];
 // Status — order = sort priority
@@ -690,14 +698,26 @@ function projTasks(proj){
 }
 
 function calcBar(phases,proj){
-  // Progresso baseado APENAS nas tasks das fases estruturadas (NP.tids)
-  // Custom tasks aparecem na lista mas não distorcem o progresso do projeto
-  let done=0,total=0;
-  for(const ph of phases)for(const id of ph.tids){total++;if(getDone(id))done++;}
-  const pct=total?Math.round(done/total*100):0;
-  let cur=0;
-  for(let i=0;i<phases.length;i++){if(!phases[i].tids.every(id=>getDone(id))){cur=i;break;}if(i===phases.length-1)cur=i;}
-  return{pct,done,total,cur};
+  // Fase 2: progresso baseado em milestones por fase (QP)
+  // milestone concluído = data já passou (TODAY > data do milestone)
+  const allMs=(S.projectMilestones||{})[proj]||[];
+  var phaseScores=QP.map(function(qp){
+    var phMs=allMs.filter(function(m){return m.phaseId===qp.id;});
+    if(!phMs.length)return 0; // fase sem milestone = 0%
+    var doneCnt=phMs.filter(function(m){
+      var d=parseMsDate(m.date);
+      return d&&d<TODAY;
+    }).length;
+    return doneCnt/phMs.length;
+  });
+  var pct=Math.round(phaseScores.reduce(function(a,b){return a+b;},0)/QP.length*100);
+  // cur = first QP phase not at 100%
+  var cur=QP.length-1;
+  for(var i=0;i<phaseScores.length;i++){if(phaseScores[i]<1){cur=i;break;}}
+  // done/total = milestones passed / total milestones (for subtitle)
+  var done=allMs.filter(function(m){var d=parseMsDate(m.date);return d&&d<TODAY;}).length;
+  var total=allMs.length;
+  return{pct,done,total,cur,phaseScores};
 }
 
 function parseMsDate(dateStr){
@@ -771,7 +791,7 @@ function buildHTML(){
     const nmQ=getNearestMilestone('q');
     const dnD=nmQ?nmQ.days:'-';
     const dnL=nmQ?nmQ.label:'sem milestone';
-    return buildTC('q','📝 Quitanda Escolas',dnD,dnL,bN,NP,'#2A6B6B');
+    return buildTC('q','📝 Quitanda Escolas',dnD,dnL,bN,QP,'#2A6B6B');
   })()
     +(S.customProjects||[]).map(p=>buildTCCustom(p)).join('')
     +buildPropsCard(allProps)
@@ -913,7 +933,10 @@ function buildOverview(nat,ria,allMs){
 function buildTC(proj,label,days,milestone,b,phases,color){
   // Phase stepper — option C
   const dots=phases.map(function(ph,i){
-    const phaseDone=ph.tids.every(function(id){return getDone(id);});
+    // Use phaseScores if available (QP milestone-based), else fall back to tids
+    var phaseDone=b.phaseScores
+      ?b.phaseScores[i]>=1
+      :(ph.tids||[]).every(function(id){return getDone(id);});
     const isCur=i===b.cur&&!phaseDone;
     const isFuture=!phaseDone&&!isCur;
     // Dot style
@@ -959,7 +982,7 @@ function buildTC(proj,label,days,milestone,b,phases,color){
   labelRow+='</div>';
 
   // Phase subtitle — current phase name
-  var curPhase=phases[b.cur]?phases[b.cur].name:'';
+  var curPhase=phases[b.cur]?(phases[b.cur].label||phases[b.cur].name||''):'sem fase';
   var subtitle=b.pct===100
     ?'todas as fases concluídas'
     :'fase atual: '+curPhase;
@@ -968,7 +991,7 @@ function buildTC(proj,label,days,milestone,b,phases,color){
     +'<div style="position:absolute;top:0;left:0;right:0;height:3px;background:'+color+';border-radius:var(--rad) var(--rad) 0 0"></div>'
     +'<div class="tc-hdr"><div class="tc-lbl">'+label+'</div></div>'
     +'<div class="tc-days" style="color:'+color+'">'+b.pct+'%</div>'
-    +'<div style="font-size:11px;color:var(--tx2);margin-bottom:11px;line-height:1.3">'+b.done+'/'+b.total+' tarefas · '+esc(subtitle)+'</div>'
+    +'<div style="font-size:11px;color:var(--tx2);margin-bottom:11px;line-height:1.3">'+(b.total?b.done+'/'+b.total+' marcos · ':'')+esc(subtitle)+'</div>'
     +'<div class="bar-wrap">'
     +'<div class="bar-lbl"><span style="color:var(--tx3)">progresso</span><span style="color:'+color+';font-weight:600">'+b.pct+'%</span></div>'
     +'<div class="bar-track"><div class="bar-fill" style="width:'+b.pct+'%;background:'+color+'"></div></div>'
@@ -1070,6 +1093,7 @@ function buildMsList(proj,color){
     return'<div class="ms-item" style="'+(isNearest?'border-color:'+color+'66;':'')+'">'
       +'<span class="ms-pill" style="background:'+color+'22;color:'+color+'">'
         +esc(m.date||'?')+'</span>'
+      +(m.phaseId?'<span style="font-size:9px;background:var(--bd);color:var(--tx3);padding:1px 6px;border-radius:8px;margin-right:4px">'+esc(m.phaseId)+'</span>':'')
       +'<span class="ms-txt">'+esc(m.label)+'</span>'
       +badge
       +(daysLeft!==null
@@ -1741,7 +1765,7 @@ B.openAddMilestone=function(projId){
     +'<div class="modal"><div class="modal-drag"></div><h3>Novo milestone</h3>'
     +'<input type="hidden" id="mm-proj" value="'+esc(projId)+'">'
     +'<div class="mf"><label class="ml" for="mm-l">Descrição</label><input class="mi" id="mm-l" placeholder="Ex: Apresentação para cliente"/></div>'
-    +'<div class="mf"><label class="ml" for="mm-d">Data (dd/mm)</label><input class="mi" id="mm-d" placeholder="Ex: 20/05" inputmode="numeric"/></div>'
+    +'<div class="mf"><label class="ml" for="mm-phase">Fase</label>'    +'<select class="mi" id="mm-phase">'    +'<option value="">— sem fase —</option>'    +'<option value="E1">E1: Diagnóstico</option>'    +'<option value="E2">E2: Escuta Externa, Interna e Alunos</option>'    +'<option value="E3">E3: Análise e Estratégia</option>'    +'<option value="E4">E4: WS Estratégico</option>'    +'<option value="E5">E5: Consolidação e Diretrizes</option>'    +'<option value="MA">MA: Módulo Alunos</option>'    +'</select></div>'    +'<div class="mf"><label class="ml" for="mm-d">Data (dd/mm)</label><input class="mi" id="mm-d" placeholder="Ex: 20/05" inputmode="numeric"/></div>'
     +'<div class="merr" id="mm-e"></div>'
     +'<div class="ma"><button class="mc" onclick="B.closeModal()">Cancelar</button>'
     +'<button class="mok" style="background:var(--n)" onclick="B.confirmMilestone()">Adicionar</button>'
@@ -1752,11 +1776,12 @@ B.confirmMilestone=async function(){
   const projId=(document.getElementById('mm-proj')||{value:''}).value;
   const label=(document.getElementById('mm-l')||{value:''}).value.trim();
   const date=(document.getElementById('mm-d')||{value:''}).value.trim();
+  const phaseId=(document.getElementById('mm-phase')||{value:''}).value||null;
   if(!label){const e=document.getElementById('mm-e');if(e)e.textContent='Descreva o milestone.';return;}
   if(!projId){return;}
   if(!S.projectMilestones)S.projectMilestones={};
   if(!S.projectMilestones[projId])S.projectMilestones[projId]=[];
-  S.projectMilestones[projId].push({id:uid(),label,date:date||'a definir',ts:Date.now()});
+  S.projectMilestones[projId].push({id:uid(),label,date:date||'a definir',phaseId:phaseId||null,ts:Date.now()});
   B.closeModal();await save('Milestone adicionado ✓');render();
 };
 B.delMilestone=async function(projId,msId){
