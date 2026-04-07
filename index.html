@@ -1131,7 +1131,7 @@ function buildTask(task){
   const expCls=cmts.length&&!isExp?'exp-btn has-c':'exp-btn';
   const expTxt=isExp?'▴ fechar':'▾ '+cntTxt;
   const secMeta=(task.who||task.addedBy)?'<div class="tsec">'+(task.who?esc(task.who):'')+(task.addedBy?' · por '+esc(task.addedBy):'')+'</div>':'';
-  const accentCls=done?'':({'atr':'st-atr','pri':'st-pri','agu':'st-agu','ibs':'st-ibs','pau':'st-pau'}[stKey]||'');
+  const accentCls=done?'':({'atr':'st-atr','pri':'st-pri'}[stKey]||'');
 
   return'<div class="ti '+(done?'done ':'')+accentCls+'" id="ti-'+task.id+'"'
     +' draggable="true" ondragstart="B.ds(event,\''+task.id+'\')" ondragover="B.dov(event)" ondragleave="B.dl(event)" ondrop="B.dd(event,\''+task.id+'\',\''+proj+'\')" ondragend="B.de(event)">'
@@ -1793,8 +1793,8 @@ B.delMilestone=async function(projId,msId){
 // ── tasks ─────────────────────────────────────────────────────────────────────
 B.openAddTask=function(proj){
   const cp=(S.customProjects||[]).find(p=>p.id===proj);
-  const label=proj==='q'?'Quitanda Escolas':proj==='q'?'Riachuelo':(cp?cp.name:proj);
-  const clr=proj==='q'?'#0F6E56':proj==='q'?'#533AB7':(cp?cp.color:'#0F6E56');
+  const label=proj==='q'?'Quitanda Escolas':(cp?cp.name:proj);
+  const clr=proj==='q'?'#2A6B6B':(cp?cp.color:'#2A6B6B');
   showModal('<div class="modal-ov" onclick="if(event.target===this)B.closeModal()">'
     +'<div class="modal"><div class="modal-drag"></div><h3>Nova tarefa — '+esc(label)+'</h3>'
     +'<input type="hidden" id="at-proj" value="'+esc(proj)+'">'
@@ -1813,7 +1813,7 @@ B.openAddTask=function(proj){
   setTimeout(function(){const el=document.getElementById('mt-t');if(el)el.focus();},30);
 };
 B.confirmTask=async function(){
-  const proj=(document.getElementById('at-proj')||{value:''}).value;
+  const proj=(document.getElementById('at-proj')||{value:'q'}).value||'q';
   const titleEl=document.getElementById('mt-t');
   const title=titleEl?titleEl.value.trim():'';
   if(!title){const e=document.getElementById('mt-e');if(e)e.textContent='Descreva a tarefa.';return;}
