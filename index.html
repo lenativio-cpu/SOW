@@ -1149,7 +1149,6 @@ function buildCmts(taskId){
     +' placeholder="Escreva um comentário... (Enter para salvar, Shift+Enter nova linha)" oninput="ar(this)"'
     +' onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();B.addCmt(\''+taskId+'\');}"></textarea>'
     +'<button class="add-cmt-btn" onclick="B.addCmt(\''+taskId+'\')">Salvar</button>'
-    +(task.custom?'<button class="task-del-btn" onclick="event.stopPropagation();B.delTask(\''+task.id+'\')">✕</button>':'')+'</div></div>';
 }
 
 function buildCustomView(p,allMs){
