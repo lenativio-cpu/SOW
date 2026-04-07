@@ -204,6 +204,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);min-h
 /* simplified meta — only key info visible */
 .tmeta{display:flex;gap:5px;flex-wrap:wrap;align-items:center;}
 .pill{font-size:11px;font-weight:500;padding:2px 8px;border-radius:10px;white-space:nowrap;}
+.pill-q{background:#2A6B6B22;color:#2A6B6B;}
 .pill-n{background:var(--nl);color:var(--n);}
 .pill-r{background:var(--rl);color:var(--r);}
 .pill-red{background:var(--urgl);color:var(--urg);}
@@ -770,7 +771,7 @@ function buildHTML(){
   })()
     +(S.customProjects||[]).map(p=>buildTCCustom(p)).join('')
     +buildPropsCard(allProps)
-    +'</div></div>';
+    +(task.custom?'<button class="task-del-btn" onclick="event.stopPropagation();B.delTask(\''+task.id+'\')" title="Remover tarefa" style="background:none;border:none;cursor:pointer;color:var(--tx3);font-size:12px;padding:2px 6px;border-radius:4px;opacity:0;transition:opacity .15s;" onmouseenter="this.style.opacity=1" onmouseleave="this.style.opacity=0">✕</button>':'')+'</div></div>';
 
   // underline tabs
   const customTabsHTML=(S.customProjects||[]).map(p=>{
@@ -854,14 +855,14 @@ function buildOverview(nat,ria,allMs){
   
 
   // today/urgent tasks
-  const allActive=[...nat,...ria,...(S.customTasks||[]).map(t=>({...t,done:t.done}))];
+  const allActive=[...nat,...(S.customTasks||[]).map(t=>({...t,done:t.done}))];
   const todayTasks=allActive.filter(t=>{
     if(t.done)return false;
     const s=(t.date||'').toLowerCase();
     const st=(S.taskStatus||{})[t.id]||'and';
     return s==='hoje'||st==='atr'||st==='pri';
   });
-  const weekTasks=[...nat,...ria].filter(t=>{
+  const weekTasks=[...nat].filter(t=>{
     if(t.done)return false;
     const s=(t.date||'').toLowerCase();
     const st=(S.taskStatus||{})[t.id]||'and';
@@ -923,7 +924,7 @@ function buildTC(proj,label,days,milestone,b,phases,color){
         +'border:1.5px solid var(--bds);flex-shrink:0;box-sizing:border-box;';
     }
     // Label style
-    var lblStyle='font-size:9px;text-align:center;line-height:1.25;margin-top:4px;white-space:nowrap;';
+    var lblStyle='font-size:9px;text-align:center;line-height:1.25;margin-top:4px;white-space:nowrap;max-width:46px;overflow:hidden;text-overflow:ellipsis;';
     if(phaseDone||isCur){
       lblStyle+='color:'+color+';font-weight:'+(isCur?'700':'500')+';';
     } else {
@@ -962,8 +963,8 @@ function buildTC(proj,label,days,milestone,b,phases,color){
   return'<div class="tc" style="position:relative">'
     +'<div style="position:absolute;top:0;left:0;right:0;height:3px;background:'+color+';border-radius:var(--rad) var(--rad) 0 0"></div>'
     +'<div class="tc-hdr"><div class="tc-lbl">'+label+'</div></div>'
-    +'<div class="tc-days" style="color:'+color+'">'+b.done+'/'+b.total+'</div>'
-    +'<div style="font-size:11px;color:var(--tx2);margin-bottom:11px;line-height:1.3">'+esc(subtitle)+'</div>'
+    +'<div class="tc-days" style="color:'+color+'">'+b.pct+'%</div>'
+    +'<div style="font-size:11px;color:var(--tx2);margin-bottom:11px;line-height:1.3">'+b.done+'/'+b.total+' tarefas · '+esc(subtitle)+'</div>'
     +'<div class="bar-wrap">'
     +'<div class="bar-lbl">'
     +'<span style="color:var(--tx3)">progresso</span>'
@@ -1088,7 +1089,7 @@ function buildTask(task){
   const done=task.done;
   const cbCls=done?(proj==='q'?'on-q':'on-q'):'';
   const cp=(S.customProjects||[]).find(p=>p.id===proj);
-  const pillCls=proj==='q'?'pill-n':proj==='q'?'pill-r':'';
+  const pillCls=proj==='q'?'pill-q':'';
   const pillSt=cp?'background:'+cp.color+'22;color:'+cp.color+';':'';
   const projLabel=proj==='q'?'Quitanda':(cp?cp.name:proj);
   let badge='';
@@ -1776,7 +1777,7 @@ B.openAddTask=function(proj){
     +'<input type="hidden" id="at-proj" value="'+esc(proj)+'">'
     +'<div class="mf"><label class="ml" for="mt-t">Tarefa</label><input class="mi" id="mt-t" placeholder="Descreva a tarefa..."/></div>'
     +'<div class="mf"><label class="ml" for="mt-w">Responsável</label>'
-    +'<select class="msel" id="mt-w"><option>Lele</option><option>Luana</option><option>Colaborador</option><option>Bru + Lele</option><option>Laura + Lele</option><option>Bru + Laura</option><option>ALL</option></select></div>'
+    +'<select class="msel" id="mt-w"><option>Lele</option><option>Luana</option><option>Colaborador</option><option>Lele + Luana</option><option>Lele + Colaborador</option><option>Luana + Colaborador</option><option>ALL</option></select></div>'
     +'<div class="mf"><label class="ml" for="mt-d">Deadline</label><input class="mi" id="mt-d" placeholder="ex: 05/04" inputmode="numeric"/></div>'
     +'<div class="mf"><label class="ml" for="mt-p">Status inicial</label>'
     +'<select class="msel" id="mt-p"><option value="and">🟢 em andamento</option><option value="ibs">🔵 início em breve</option><option value="agu">🟡 aguardando info</option><option value="pri">🟠 prioridade total</option><option value="atr">🔴 atrasada</option><option value="pau">⚪ pausada</option></select></div>'
@@ -1793,10 +1794,10 @@ B.confirmTask=async function(){
   const titleEl=document.getElementById('mt-t');
   const title=titleEl?titleEl.value.trim():'';
   if(!title){const e=document.getElementById('mt-e');if(e)e.textContent='Descreva a tarefa.';return;}
-  const who=(document.getElementById('mt-w')||{value:'Bru'}).value;
+  const who=(document.getElementById('mt-w')||{value:'Lele'}).value;
   const date=(document.getElementById('mt-d')||{value:''}).value.trim();
   const statusVal=(document.getElementById('mt-p')||{value:'and'}).value;
-  const by=(document.getElementById('mt-b')||{value:'Bru'}).value;
+  const by=(document.getElementById('mt-b')||{value:'Lele'}).value;
   const taskId=uid();
   const task={id:taskId,p:proj,title,who,date:date||'a definir',pri:2,addedBy:by,done:false,custom:true,ts:Date.now()};
   if(!S.customTasks)S.customTasks=[];
