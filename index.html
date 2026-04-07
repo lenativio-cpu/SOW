@@ -541,7 +541,7 @@ const NP=[
 const RP=[];
 const DA={q:[]};  // alerts removed — milestones shown via buildMsCard
 const PC=['#0F6E56','#533AB7','#A32D2D','#854F0B','#185FA5','#993556','#3B6D11','#D85A30'];
-const PE=['🎯','🚀','💡','⚡','🌟','🎨','📐','🔥'];
+const PE=['🎯','🚀','💡','⚡','🌟','🎨','📐','🔥','💍','💎','⚙️','💻','🏗️','📊','🌿','✦','🎪','🧠','💼','🎬','🔬','📱','🏢','🌎','🤝','📣','🎓','💰','🛠️','🎭'];
 // Status — order = sort priority
 const SM_ORDER=['atr','pri','agu','and','ibs','pau'];
 const SM={
@@ -588,12 +588,16 @@ async function init(){
       if(!S._msInitialized){
         if(!S.projectMilestones)S.projectMilestones={};
         if(!Array.isArray(S.projectMilestones['q']))S.projectMilestones['q']=[];
-        
-        const nHasTouchpoint=false;
-        const rHasComite=false;
-        
-        
+        // Purge legacy Natura/Riachuelo milestone keys
+        delete S.projectMilestones['n'];
+        delete S.projectMilestones['r'];
         S._msInitialized=true;ch=true;
+      }
+      // Always purge n/r milestone keys (in case _msInitialized was already true)
+      if(S.projectMilestones&&(S.projectMilestones['n']||S.projectMilestones['r'])){
+        delete S.projectMilestones['n'];
+        delete S.projectMilestones['r'];
+        ch=true;
       }
       if(!Array.isArray(S.customProps)){S.customProps=[];ch=true;}
       // Purge stale milestone-text alerts from S.projectAlerts
@@ -767,7 +771,7 @@ function buildHTML(){
     
     const dnD=nmQ?nmQ.days:'-';const dnL=nmQ?nmQ.label:'sem milestone';
     const drD=nmQ?nmQ.days:'-';const drL=nmQ?nmQ.label:'sem milestone';
-    return buildTC('q','🏫 Quitanda Escolas',dnD,dnL,bN,NP,'#2A6B6B');
+    return buildTC('q','📝 Quitanda Escolas',dnD,dnL,bN,NP,'#2A6B6B');
   })()
     +(S.customProjects||[]).map(p=>buildTCCustom(p)).join('')
     +buildPropsCard(allProps)
@@ -782,7 +786,7 @@ function buildHTML(){
   const tabs='<div class="tabs-wrap"><div class="tabs-nav">'
     +'<div class="tabs-projects">'
     +'<button class="tab '+(V==='all'?'act':'')+'" onclick="B.sv(\'all\')">Visão geral</button>'
-    +'<button class="tab '+(V==='q'?'act-q':'')+'" style="'+(V==='q'?'color:#2A6B6B;border-bottom-color:#2A6B6B;':'')+'" onclick="B.sv(\'q\')">🏫 Quitanda Escolas</button>'
+    +'<button class="tab '+(V==='q'?'act-q':'')+'" style="'+(V==='q'?'color:#2A6B6B;border-bottom-color:#2A6B6B;':'')+'" onclick="B.sv(\'q\')">📝 Quitanda Escolas</button>'
     
     +customTabsHTML
     +'</div>'
@@ -832,7 +836,7 @@ function buildHTML(){
 function buildOverviewAlerts(nat,ria,allMs){
   const alerts=[];
   const projs=[
-    {id:'q',emoji:'🏫',label:'Quitanda Escolas',tasks:nat},
+    {id:'q',emoji:'📝',label:'Quitanda Escolas',tasks:nat},
   ];
   for(const {emoji,label,tasks} of projs){
     // Collect atrasada + prioridade total tasks, max 3
@@ -966,15 +970,11 @@ function buildTC(proj,label,days,milestone,b,phases,color){
     +'<div class="tc-days" style="color:'+color+'">'+b.pct+'%</div>'
     +'<div style="font-size:11px;color:var(--tx2);margin-bottom:11px;line-height:1.3">'+b.done+'/'+b.total+' tarefas · '+esc(subtitle)+'</div>'
     +'<div class="bar-wrap">'
-    +'<div class="bar-lbl">'
-    +'<span style="color:var(--tx3)">progresso</span>'
-    +'<span style="color:'+color+';font-weight:600">'+b.pct+'%</span>'
-    +'</div>'
-    +'<div class="bar-track"><div class="bar-fill" style="width:'+b.pct+'%;background:'+color+'"></div></div>'
-    +stepperRow
+    +'<div class="bar-wrap">'    +'<div class="bar-lbl"><span style="color:var(--tx3)">progresso</span><span style="color:'+color+';font-weight:600">'+b.pct+'%</span></div>'    +'<div class="bar-track"><div class="bar-fill" style="width:'+b.pct+'%;background:'+color+'"></div></div>'    +stepperRow
     +labelRow
     +'</div></div>';
 }
+
 
 
 
@@ -982,28 +982,24 @@ function buildTCCustom(p){
   const tasks=(S.customTasks||[]).filter(t=>t.p===p.id);
   const done=tasks.filter(t=>t.done).length,total=tasks.length,pct=total?Math.round(done/total*100):0;
   const c=p.color||'#888';
-  // Find nearest upcoming milestone: check p.milestoneDate AND S.projectMilestones[p.id]
-  let nearestDays=null,nearestLabel=null;
-  if(p.milestoneDate){
-    const d=Math.round((new Date(p.milestoneDate)-TODAY)/86400000);
-    if(d>=0){nearestDays=d;nearestLabel=p.milestoneLabel||'milestone';}
-  }
-  for(const m of(S.projectMilestones||{})[p.id]||[]){
-    if(!m.date)continue;
-    const mt=m.date.match(/(\d{1,2})\/(\d{1,2})/);
-    if(!mt)continue;
-    const d=Math.round((new Date(2026,parseInt(mt[2])-1,parseInt(mt[1]))-TODAY)/86400000);
-    if(d>=0&&(nearestDays===null||d<nearestDays)){nearestDays=d;nearestLabel=m.label;}
-  }
-  return'<div class="tc" style="position:relative">'
+  const nm=getNearestMilestone(p.id);
+  const daysStr=nm?String(nm.days):'-';
+  const labelStr=nm?nm.label:'sem milestone';
+  const html='<div class="tc" style="position:relative">'
     +'<div style="position:absolute;top:0;left:0;right:0;height:3px;background:'+c+';border-radius:var(--rad) var(--rad) 0 0"></div>'
     +'<div class="tc-hdr"><div class="tc-lbl">'+(p.emoji||'📁')+' '+esc(p.name)+'</div>'
-    +'<button class="tc-act" onclick="B.archiveProject(\''+p.id+'\')" aria-label="Arquivar">📦</button></div>'
-    +(nearestDays!==null?'<div class="tc-days" style="color:'+c+'">'+nearestDays+' dias</div><div class="tc-desc">'+esc(nearestLabel)+'</div>':'<div class="tc-desc" style="color:var(--tx3);margin-top:4px">sem milestone</div>')
-    +'<div class="bar-wrap"><div class="bar-lbl"><span>'+done+'/'+total+'</span><span style="color:'+c+';font-weight:600">'+pct+'%</span></div>'
+    +'<button class="tc-act" onclick="B.sv(\''+p.id+'\')">→</button></div>'
+    +'<div class="tc-days" style="color:'+c+'">'+daysStr+'</div>'
+    +'<div style="font-size:11px;color:var(--tx2);margin-bottom:11px;line-height:1.3">'+esc(labelStr)+'</div>'
+    +'<div class="bar-wrap">'
+    +'<div class="bar-lbl"><span style="color:var(--tx3)">tarefas</span>'
+    +'<span style="color:'+c+';font-weight:600">'+pct+'%</span></div>'
     +'<div class="bar-track"><div class="bar-fill" style="width:'+pct+'%;background:'+c+'"></div></div>'
     +'</div></div>';
+  return html;
 }
+
+
 
 function buildPropsCard(props){
   const items=props.map(p=>{
@@ -1197,7 +1193,7 @@ function buildMural(){
   const postits=S.postits||[];
   // project filter options
   const projOpts=[{id:'all',label:'Todos'}];
-  projOpts.push({id:'n',label:'🌿 Natura'},{id:'r',label:''});
+  // Only Quitanda (fixed) and custom projects — no legacy n/r
   (S.customProjects||[]).forEach(p=>projOpts.push({id:p.id,label:(p.emoji||'📁')+' '+p.name}));
 
   const filterBtns=projOpts.map(o=>'<button class="mural-filter-btn '+(muralFilter===o.id?'act':'')+'" onclick="B.setMuralFilter(\''+o.id+'\')">'+o.label+'</button>').join('');
@@ -1946,7 +1942,7 @@ B.openAddPostit=function(){
   const colorSwatches=POSTIT_COLORS.map((c,i)=>'<div style="width:28px;height:28px;border-radius:50%;background:'+c.bg+';cursor:pointer;border:2px solid '+(i===0?'var(--tx)':'transparent')+';transition:border-color .15s;" onclick="B.pickPostitColor(\''+c.bg+'\',this)" data-c="'+c.bg+'" title="'+c.name+'"></div>').join('');
   const emojiPicker=POSTIT_EMOJIS.map((e,i)=>'<button style="font-size:20px;background:none;border:1.5px solid '+(i===0?'var(--tx)':'var(--bd)')+';border-radius:6px;padding:3px 6px;cursor:pointer;" onclick="B.pickPostitEmoji(\''+e+'\',this)" data-e="'+e+'">'+e+'</button>').join('');
   const projOpts='<option value="none">— sem projeto —</option>'
-    +'<option value="n">🏫 Quitanda Escolas</option>'
+    +'<option value="n">📝 Quitanda Escolas</option>'
     +'<option value="r"></option>'
     +(S.customProjects||[]).map(p=>'<option value="'+p.id+'">'+( p.emoji||'📁')+' '+esc(p.name)+'</option>').join('');
   showModal('<div class="modal-ov" onclick="if(event.target===this)B.closeModal()">'    +'<div class="modal"><div class="modal-drag"></div><h3>Nova nota no mural</h3>'    +'<div class="mf"><label class="ml">Emoji</label><div class="ew" id="pit-em">'+emojiPicker+'</div></div>'    +'<div class="mf"><label class="ml">Cor</label><div style="display:flex;gap:8px;flex-wrap:wrap" id="pit-cl">'+colorSwatches+'</div></div>'    +'<div class="mf"><label class="ml" for="pit-txt">Nota</label><textarea class="mi" id="pit-txt" rows="4" placeholder="Escreva sua nota..." style="resize:none;line-height:1.55;"></textarea></div>'    +'<div class="mf"><label class="ml" for="pit-au">Autor</label><select class="msel" id="pit-au"><option>Lele</option><option>Luana</option><option>Colaborador</option></select></div>'    +'<div class="mf"><label class="ml" for="pit-proj">Projeto</label><select class="msel" id="pit-proj">'+projOpts+'</select></div>'    +'<div class="merr" id="pit-e"></div>'    +'<div class="ma"><button class="mc" onclick="B.closeModal()">Cancelar</button>'    +'<button class="mok" style="background:var(--tx)" onclick="B.confirmPostit()">Adicionar</button>'    +'</div></div></div>');
