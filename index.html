@@ -970,10 +970,13 @@ function buildTC(proj,label,days,milestone,b,phases,color){
     +'<div class="tc-days" style="color:'+color+'">'+b.pct+'%</div>'
     +'<div style="font-size:11px;color:var(--tx2);margin-bottom:11px;line-height:1.3">'+b.done+'/'+b.total+' tarefas · '+esc(subtitle)+'</div>'
     +'<div class="bar-wrap">'
-    +'<div class="bar-wrap">'    +'<div class="bar-lbl"><span style="color:var(--tx3)">progresso</span><span style="color:'+color+';font-weight:600">'+b.pct+'%</span></div>'    +'<div class="bar-track"><div class="bar-fill" style="width:'+b.pct+'%;background:'+color+'"></div></div>'    +stepperRow
+    +'<div class="bar-lbl"><span style="color:var(--tx3)">progresso</span><span style="color:'+color+';font-weight:600">'+b.pct+'%</span></div>'
+    +'<div class="bar-track"><div class="bar-fill" style="width:'+b.pct+'%;background:'+color+'"></div></div>'
+    +stepperRow
     +labelRow
     +'</div></div>';
 }
+
 
 
 
