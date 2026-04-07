@@ -771,7 +771,7 @@ function buildHTML(){
   })()
     +(S.customProjects||[]).map(p=>buildTCCustom(p)).join('')
     +buildPropsCard(allProps)
-    +(task.custom?'<button class="task-del-btn" onclick="event.stopPropagation();B.delTask(\''+task.id+'\')" title="Remover tarefa" style="background:none;border:none;cursor:pointer;color:var(--tx3);font-size:12px;padding:2px 6px;border-radius:4px;opacity:0;transition:opacity .15s;" onmouseenter="this.style.opacity=1" onmouseleave="this.style.opacity=0">✕</button>':'')+'</div></div>';
+    +'</div></div>';
 
   // underline tabs
   const customTabsHTML=(S.customProjects||[]).map(p=>{
@@ -1084,7 +1084,7 @@ function buildMsList(proj,color){
     +'<div class="ms-list">'+rows+'</div>';
 }
 
-function buildTask(task){
++(task.custom?'<button class="task-del-btn" onclick="event.stopPropagation();B.delTask(\''+task.id+'\')" title="Remover" style="opacity:0;background:none;border:none;cursor:pointer;color:var(--tx3);font-size:13px;padding:0 4px;border-radius:3px;transition:opacity .15s" onmouseenter="this.style.opacity=1" onmouseleave="this.style.opacity=0">✕</button>':'')+'</div></div>';function buildTask(task){
   const proj=task.p;
   const done=task.done;
   const cbCls=done?(proj==='q'?'on-q':'on-q'):'';
@@ -1126,7 +1126,7 @@ function buildTask(task){
     +'<div class="tmeta"><span class="pill '+pillCls+'" style="'+pillSt+'">'+projLabel+'</span>'+badge+'<span class="tdate">'+esc(task.date)+'</span></div>'
     +secMeta
     +'<div onclick="event.stopPropagation()">'+statusSel+'</div>'
-    +'</div></div>'
+    +(task.custom?'<button class="task-del-btn" onclick="event.stopPropagation();B.delTask(\''+task.id+'\')" style="background:none;border:none;cursor:pointer;color:var(--tx3);font-size:11px;padding:0 4px;float:right">✕</button>':'')+(task.custom?'<button onclick="event.stopPropagation();B.delTask(\''+task.id+'\')" style="background:none;border:none;cursor:pointer;color:var(--tx3);font-size:11px;padding:0 4px;">✕</button>':'')+'</div></div>'
     +'<button class="'+expCls+'" id="expbtn-'+task.id+'" onclick="B.toggleCmt(\''+task.id+'\');event.stopPropagation()">'+expTxt+'</button>'
     +'<div id="cmt-'+task.id+'"'+(isExp?'':' hidden')+'>'+buildCmts(task.id)+'</div>'
     +'</div>';
@@ -1149,7 +1149,7 @@ function buildCmts(taskId){
     +' placeholder="Escreva um comentário... (Enter para salvar, Shift+Enter nova linha)" oninput="ar(this)"'
     +' onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();B.addCmt(\''+taskId+'\');}"></textarea>'
     +'<button class="add-cmt-btn" onclick="B.addCmt(\''+taskId+'\')">Salvar</button>'
-    +'</div></div>';
+    +(task.custom?'<button class="task-del-btn" onclick="event.stopPropagation();B.delTask(\''+task.id+'\')">✕</button>':'')+'</div></div>';
 }
 
 function buildCustomView(p,allMs){
