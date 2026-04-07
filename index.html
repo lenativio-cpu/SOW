@@ -1084,7 +1084,7 @@ function buildMsList(proj,color){
     +'<div class="ms-list">'+rows+'</div>';
 }
 
-+(task.custom?'<button class="task-del-btn" onclick="event.stopPropagation();B.delTask(\''+task.id+'\')" title="Remover" style="opacity:0;background:none;border:none;cursor:pointer;color:var(--tx3);font-size:13px;padding:0 4px;border-radius:3px;transition:opacity .15s" onmouseenter="this.style.opacity=1" onmouseleave="this.style.opacity=0">✕</button>':'')+'</div></div>';function buildTask(task){
+function buildTask(task){
   const proj=task.p;
   const done=task.done;
   const cbCls=done?(proj==='q'?'on-q':'on-q'):'';
