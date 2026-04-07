@@ -67,7 +67,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);min-h
 .thermo-wrap::-webkit-scrollbar{height:3px;}
 .thermo-wrap::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px;}
 .thermo-strip{display:flex;gap:12px;width:max-content;padding-right:32px;}
-.tc{border-radius:var(--rad);padding:16px 18px;border:0.5px solid var(--bd);background:var(--surf);position:relative;overflow:hidden;width:218px;flex-shrink:0;box-shadow:var(--shadow);}
+.tc{border-radius:var(--rad);padding:16px 18px;border:0.5px solid var(--bd);background:var(--surf);position:relative;overflow:hidden;width:240px;flex-shrink:0;box-shadow:var(--shadow);}
 .tc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
 .tc-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
 .tc-lbl{font-size:11px;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em;font-weight:500;}
@@ -690,9 +690,10 @@ function projTasks(proj){
 }
 
 function calcBar(phases,proj){
+  // Progresso baseado APENAS nas tasks das fases estruturadas (NP.tids)
+  // Custom tasks aparecem na lista mas não distorcem o progresso do projeto
   let done=0,total=0;
   for(const ph of phases)for(const id of ph.tids){total++;if(getDone(id))done++;}
-  for(const t of(S.customTasks||[]).filter(t=>t.p===proj)){total++;if(t.done)done++;}
   const pct=total?Math.round(done/total*100):0;
   let cur=0;
   for(let i=0;i<phases.length;i++){if(!phases[i].tids.every(id=>getDone(id))){cur=i;break;}if(i===phases.length-1)cur=i;}
@@ -768,9 +769,8 @@ function buildHTML(){
   const strip='<div class="thermo-wrap"><div class="thermo-strip">'
     +(()=>{
     const nmQ=getNearestMilestone('q');
-    
-    const dnD=nmQ?nmQ.days:'-';const dnL=nmQ?nmQ.label:'sem milestone';
-    const drD=nmQ?nmQ.days:'-';const drL=nmQ?nmQ.label:'sem milestone';
+    const dnD=nmQ?nmQ.days:'-';
+    const dnL=nmQ?nmQ.label:'sem milestone';
     return buildTC('q','📝 Quitanda Escolas',dnD,dnL,bN,NP,'#2A6B6B');
   })()
     +(S.customProjects||[]).map(p=>buildTCCustom(p)).join('')
@@ -898,11 +898,11 @@ function buildOverview(nat,ria,allMs){
     +'<div class="focus-grid">'
     +'<div class="focus-card">'
     +'<div class="focus-card-title">🔥 Hoje e atrasadas <span class="focus-count">'+todayTasks.length+'</span></div>'
-    +(todayTasks.length?todayTasks.slice(0,7).map(taskRow).join(''):'<p class="empty" style="padding:8px 0">Nenhuma tarefa crítica 🎉</p>')
+    +(todayTasks.length?todayTasks.slice(0,7).map(t=>taskRow(t)).join(''):'<p class="empty" style="padding:8px 0">Nenhuma tarefa crítica 🎉</p>')
     +'</div>'
     +'<div class="focus-card">'
     +'<div class="focus-card-title">📅 Esta semana</div>'
-    +(weekTasks.length?weekTasks.slice(0,6).map(taskRow).join(''):'<p class="empty" style="padding:8px 0">Tudo em dia!</p>')
+    +(weekTasks.length?weekTasks.slice(0,6).map(t=>taskRow(t)).join(''):'<p class="empty" style="padding:8px 0">Tudo em dia!</p>')
     +'</div></div>'
     +'<div class="add-bar">'
     +'<button class="add-btn add-btn-q" onclick="B.openAddTask(\'q\')">+ tarefa</button>'
@@ -928,7 +928,7 @@ function buildTC(proj,label,days,milestone,b,phases,color){
         +'border:1.5px solid var(--bds);flex-shrink:0;box-sizing:border-box;';
     }
     // Label style
-    var lblStyle='font-size:9px;text-align:center;line-height:1.25;margin-top:4px;white-space:nowrap;max-width:46px;overflow:hidden;text-overflow:ellipsis;';
+    var lblStyle='font-size:9px;text-align:center;line-height:1.25;margin-top:4px;white-space:nowrap;max-width:52px;overflow:hidden;text-overflow:ellipsis;';
     if(phaseDone||isCur){
       lblStyle+='color:'+color+';font-weight:'+(isCur?'700':'500')+';';
     } else {
