@@ -1600,24 +1600,65 @@ function buildHTML(){
 
 function buildOverview(nat, allMs){
   const allActive = [...nat, ...(S.customTasks||[]).map(t=>({...t,done:t.done}))];
-  const todayTasks = allActive.filter(t=>{
+
+  // ── Parsear data de início real de uma tarefa ─────────────────────────
+  // Extrai a primeira data dd/mm de strings como "29/04", "29/04–15/05" etc.
+  function parseStartDate(dateStr){
+    if(!dateStr) return null;
+    const m = dateStr.match(/(\d{1,2})\/(\d{1,2})/);
+    if(!m) return null;
+    return new Date(2026, parseInt(m[2])-1, parseInt(m[1]));
+  }
+
+  // Datas de referência
+  const hoje = new Date(TODAY);
+  hoje.setHours(0,0,0,0);
+  const fimSemana = new Date(hoje.getTime() + 7*86400000);
+  const fimProxSemana = new Date(hoje.getTime() + 14*86400000);
+
+  // ── Classificar tarefas ───────────────────────────────────────────────
+  const criticas = allActive.filter(t=>{
     if(t.done) return false;
-    const s = (t.date||'').toLowerCase();
     const st = (S.taskStatus||{})[t.id]||'and';
-    return s==='hoje'||st==='atr'||st==='pri';
-  });
-  const weekTasks = [...nat].filter(t=>{
-    if(t.done) return false;
-    const s = (t.date||'').toLowerCase();
-    const st = (S.taskStatus||{})[t.id]||'and';
-    if(s==='hoje'||st==='atr'||st==='pri') return false;
-    return s.includes('esta semana')||parseDl(t.date)<=407;
+    return st==='atr'||st==='pri';
   });
 
-  // Alertas dinâmicos (tarefas atrasadas/prioritárias)
+  const estaSemana = allActive.filter(t=>{
+    if(t.done) return false;
+    const st = (S.taskStatus||{})[t.id]||'and';
+    if(st==='atr'||st==='pri') return false; // já está em críticas
+    const d = parseStartDate(t.date);
+    if(!d) return false;
+    return d>=hoje && d<=fimSemana;
+  });
+
+  const emAndamento = allActive.filter(t=>{
+    if(t.done) return false;
+    const st = (S.taskStatus||{})[t.id]||'and';
+    if(st==='atr'||st==='pri') return false;
+    const d = parseStartDate(t.date);
+    // Tarefas que já começaram (início no passado) mas não concluídas
+    if(d && d<hoje) return true;
+    return false;
+  });
+
+  // Card "em foco" = críticas + esta semana + em andamento (sem duplicar)
+  const emFocoIds = new Set([...criticas,...estaSemana,...emAndamento].map(t=>t.id));
+  const emFoco = [...emFocoIds].map(id=>allActive.find(t=>t.id===id)).filter(Boolean);
+
+  // Próximas = começam nos próximos 14 dias
+  const proximas = allActive.filter(t=>{
+    if(t.done) return false;
+    if(emFocoIds.has(t.id)) return false;
+    const d = parseStartDate(t.date);
+    if(!d) return false;
+    return d>fimSemana && d<=fimProxSemana;
+  });
+
+  // Alertas dinâmicos
   const urgentQ = nat.filter(t=>!t.done&&['atr','pri'].includes((S.taskStatus||{})[t.id]||''));
   const dynAlerts = urgentQ.length
-    ? '<div class="alert red"><strong>📝 Quitanda Escolas — prioridade total: '+urgentQ.slice(0,3).map(t=>esc(t.title)).join(', ')+(urgentQ.length>3?' +'+(urgentQ.length-3):'')+'</strong></div>'
+    ? '<div class="alert red"><strong>📝 Quitanda Escolas — atenção: '+urgentQ.slice(0,3).map(t=>esc(t.title)).join(', ')+(urgentQ.length>3?' +'+(urgentQ.length-3):'')+'</strong></div>'
     : '';
 
   function taskRow(t){
@@ -1629,27 +1670,42 @@ function buildOverview(nat, allMs){
     const stBg = {'atr':'var(--urgl)','pri':'#FAECE7','agu':'var(--pl)','ibs':'var(--bluel)'}[stKey]||'var(--nl)';
     const stCol = {'atr':'var(--urg)','pri':'#993C1D','agu':'var(--p)','ibs':'var(--blue)'}[stKey]||'var(--n)';
     const cmtCount = ((S.taskComments||{})[t.id]||[]).length;
+    // Data de exibição mais limpa
+    const dateDisp = t.date&&t.date!=='a definir'?' · '+t.date.split('–')[0]:'';
     return '<div class="focus-task" onclick="B.sv(\''+proj+'\')" title="Ir para '+esc(projLabel)+'">'
       +'<div class="focus-cb"></div>'
       +'<div style="flex:1;min-width:0">'
         +'<div class="ftitle">'+esc(t.title)+'</div>'
         +'<div class="fproj" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">'
-          +esc(projLabel)+(t.date&&t.date!=='hoje'?' · '+esc(t.date):'')
+          +esc(projLabel)+esc(dateDisp)
           +' <span style="font-size:10px;padding:1px 5px;border-radius:8px;background:'+stBg+';color:'+stCol+'">'+esc(stObj.label||'')+'</span>'
           +(cmtCount?' <span style="font-size:10px;color:var(--n)">💬 '+cmtCount+'</span>':'')
         +'</div>'
       +'</div></div>';
   }
 
+  // Contagem por status para o card esquerdo
+  const cntAtr = criticas.filter(t=>(S.taskStatus||{})[t.id]==='atr').length;
+  const cntPri = criticas.filter(t=>(S.taskStatus||{})[t.id]==='pri').length;
+  const cntLabel = cntAtr>0
+    ? '<span class="focus-count">'+cntAtr+' atrasada'+(cntAtr>1?'s':'')+'</span>'
+    : cntPri>0
+      ? '<span class="focus-count" style="color:var(--p)">'+cntPri+' prioritária'+(cntPri>1?'s':'')+'</span>'
+      : '';
+
   return dynAlerts
     +'<div class="focus-grid">'
       +'<div class="focus-card">'
-        +'<div class="focus-card-title">🔥 Hoje e atrasadas <span class="focus-count">'+todayTasks.length+'</span></div>'
-        +(todayTasks.length?todayTasks.slice(0,7).map(t=>taskRow(t)).join(''):'<p class="empty" style="padding:8px 0">Nenhuma tarefa crítica 🎉</p>')
+        +'<div class="focus-card-title">🔥 Em foco agora '+cntLabel+'</div>'
+        +(emFoco.length
+          ? emFoco.slice(0,7).map(t=>taskRow(t)).join('')
+          : '<p class="empty" style="padding:8px 0">Nenhuma tarefa em andamento 🎉</p>')
       +'</div>'
       +'<div class="focus-card">'
-        +'<div class="focus-card-title">📅 Esta semana</div>'
-        +(weekTasks.length?weekTasks.slice(0,6).map(t=>taskRow(t)).join(''):'<p class="empty" style="padding:8px 0">Tudo em dia!</p>')
+        +'<div class="focus-card-title">📅 Próximas 2 semanas</div>'
+        +(proximas.length
+          ? proximas.slice(0,6).map(t=>taskRow(t)).join('')
+          : '<p class="empty" style="padding:8px 0">Calendário limpo por aqui!</p>')
       +'</div>'
     +'</div>'
     +'<div class="add-bar"><button class="add-btn add-btn-q" onclick="B.openAddTask(\'q\')">+ tarefa</button></div>';
