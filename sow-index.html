@@ -304,7 +304,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);min-h
    SEÇÃO 14 — LISTA DE TAREFAS
 ═══════════════════════════════════════════════════════════════════════════ */
 .task-list{display:flex;flex-direction:column;gap:6px;}
-.ti{border-radius:var(--rads);border:0.5px solid var(--bd);background:var(--surf);transition:border-color .15s,box-shadow .15s;}
+.ti{border-radius:var(--rads);border:0.5px solid var(--bd);background:var(--surf);transition:border-color .15s,box-shadow .15s;position:relative;}
+.ti:hover{border-color:var(--bds);box-shadow:var(--shadow);}
+.ti:hover .prio-card-edit{opacity:1;}
+.ttitle.done-title{text-decoration:line-through;color:var(--tx3)!important;}
 .ti:hover{border-color:var(--bds);box-shadow:var(--shadow);}
 .ti.done{opacity:.4;}
 .ti.done .ttitle{text-decoration:line-through;color:var(--tx3);}
@@ -354,7 +357,34 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);min-h
 /* ═══════════════════════════════════════════════════════════════════════════
    SEÇÃO 15 — COMENTÁRIOS
 ═══════════════════════════════════════════════════════════════════════════ */
-.cmt-wrap{border-top:0.5px solid var(--bd);padding:10px 13px 12px 42px;}
+.cmt-wrap{border-top:0.5px solid var(--bd);padding:12px 14px 14px 14px;}
+.cmt-item{padding:8px 0;border-bottom:0.5px solid var(--bd);}
+.cmt-item:last-of-type{border-bottom:none;}
+.cmt-header{display:flex;align-items:center;gap:6px;margin-bottom:4px;}
+.cmt-avatar{width:20px;height:20px;border-radius:50%;background:var(--nl);color:var(--n);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cmt-autor{font-size:12px;font-weight:600;color:var(--tx2);}
+.cmt-ts{font-size:11px;color:var(--tx3);font-family:'DM Mono',monospace;}
+.cmt-acts{margin-left:auto;display:flex;gap:4px;opacity:0;transition:opacity .15s;}
+.cmt-item:hover .cmt-acts{opacity:1;}
+.cmt-act{font-size:11px;color:var(--tx3);background:none;border:none;cursor:pointer;padding:2px 5px;border-radius:4px;font-family:'DM Sans',sans-serif;}
+.cmt-act:hover{color:var(--tx);background:var(--bd);}
+.cmt-text{font-size:13px;color:var(--tx);line-height:1.5;white-space:pre-wrap;word-break:break-word;padding-left:26px;}
+.cmt-empty{font-size:12px;color:var(--tx3);padding:4px 0;margin:0;}
+.cmt-new{margin-top:10px;border:0.5px solid var(--bds);border-radius:10px;background:var(--bg);overflow:hidden;transition:border-color .15s;}
+.cmt-new:focus-within{border-color:var(--n);box-shadow:0 0 0 3px rgba(15,110,86,.08);}
+.cmt-new-inp{width:100%;font-size:13px;font-family:'DM Sans',sans-serif;padding:10px 12px 6px;border:none;background:transparent;color:var(--tx);outline:none;resize:none;line-height:1.5;min-height:38px;display:block;box-sizing:border-box;}
+.cmt-new-inp::placeholder{color:var(--tx3);}
+.cmt-new-footer{display:flex;align-items:center;justify-content:space-between;padding:4px 8px 6px 12px;gap:8px;}
+.cmt-new-autor{font-size:11px;color:var(--tx3);display:flex;align-items:center;gap:4px;}
+.cmt-new-autor select{font-size:11px;border:none;background:transparent;color:var(--tx2);cursor:pointer;font-family:'DM Sans',sans-serif;outline:none;font-weight:500;}
+.cmt-send{font-size:12px;font-weight:500;padding:5px 12px;border-radius:7px;border:none;background:var(--n);color:#fff;cursor:pointer;font-family:'DM Sans',sans-serif;transition:opacity .15s;white-space:nowrap;}
+.cmt-send:hover{opacity:.85;}
+.add-cmt{display:flex;gap:8px;align-items:flex-start;margin-top:6px;}
+.add-cmt-inp{flex:1;font-size:13px;font-family:'DM Sans',sans-serif;padding:7px 10px;border-radius:8px;border:0.5px solid var(--bds);background:var(--bg);color:var(--tx);outline:none;resize:none;line-height:1.5;transition:border-color .15s;}
+.add-cmt-inp:focus{border-color:var(--n);box-shadow:0 0 0 3px rgba(15,110,86,.1);}
+.add-cmt-inp::placeholder{color:var(--tx3);}
+.add-cmt-btn{font-size:12px;font-weight:500;padding:7px 13px;border-radius:8px;border:0.5px solid var(--nb);background:var(--nl);color:var(--n);cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;transition:background .15s;}
+.add-cmt-btn:hover{background:var(--nb);}
 .cmt-empty{font-size:12px;color:var(--tx3);margin-bottom:8px;}
 .cmt-item{margin-bottom:9px;padding-bottom:9px;border-bottom:0.5px solid var(--bd);}
 .cmt-item:last-of-type{border-bottom:none;margin-bottom:6px;}
@@ -516,6 +546,86 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);min-h
 @keyframes spin{to{transform:rotate(360deg);}}
 .skip-link{position:absolute;top:-40px;left:16px;padding:8px 12px;background:var(--n);color:#fff;border-radius:0 0 6px 6px;font-size:13px;font-weight:500;text-decoration:none;transition:top .1s;}
 .skip-link:focus{top:0;}
+/* ═══════════════════════════════════════════════════════════════════════════
+   SEÇÃO 21 — PÁGINA DE PRIORIDADES (nova home)
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* Cabeçalho da semana */
+.prio-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;gap:12px;flex-wrap:wrap;}
+.prio-semana{font-size:22px;font-weight:300;letter-spacing:-0.02em;color:var(--tx);}
+.prio-semana strong{font-weight:600;}
+.prio-fase-badge{font-size:12px;font-weight:500;padding:4px 12px;border-radius:20px;margin-top:4px;display:inline-block;}
+
+/* Grupo de prioridade */
+.prio-grupo{margin-bottom:20px;}
+.prio-grupo-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;cursor:pointer;user-select:none;}
+.prio-grupo-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.prio-grupo-label{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;}
+.prio-grupo-count{font-size:11px;color:var(--tx3);margin-left:auto;}
+.prio-grupo-caret{font-size:10px;color:var(--tx3);}
+
+/* Card de tarefa priorizada */
+.prio-card{background:var(--surf);border:0.5px solid var(--bd);border-radius:var(--rads);padding:12px 14px 12px 14px;margin-bottom:6px;display:flex;align-items:flex-start;gap:10px;transition:border-color .15s,box-shadow .15s;position:relative;}
+.prio-card:hover{border-color:var(--bds);box-shadow:var(--shadow);}
+.prio-card-edit{position:absolute;top:8px;right:8px;background:var(--surf);border:0.5px solid var(--bds);border-radius:6px;padding:3px 8px;cursor:pointer;font-size:13px;color:var(--tx3);opacity:0;transition:opacity .15s;z-index:2;font-family:'DM Sans',sans-serif;}
+.prio-card:hover .prio-card-edit{opacity:1;}
+.prio-card-edit:hover{color:var(--tx);background:var(--bg);}
+.prio-card.urgente{border-left:3px solid var(--urg);}
+.prio-card.prioridade{border-left:3px solid #D85A30;}
+.prio-card.semana{border-left:3px solid var(--n);}
+.prio-card.radar{border-left:2px solid var(--bd);}
+.prio-cb-wrap{padding-top:2px;flex-shrink:0;}
+.prio-body{flex:1;min-width:0;}
+.prio-title{font-size:14px;font-weight:500;color:var(--tx);line-height:1.35;margin-bottom:4px;}
+.prio-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.prio-fase{font-size:10px;font-weight:500;padding:1px 7px;border-radius:8px;}
+.prio-who{font-size:11px;color:var(--tx3);}
+.prio-date{font-size:11px;font-family:'DM Mono',monospace;color:var(--tx3);}
+.prio-ms-badge{font-size:10px;padding:1px 6px;border-radius:6px;background:var(--nl);color:var(--n);font-weight:500;}
+.prio-score{font-size:10px;color:var(--tx3);margin-left:auto;flex-shrink:0;font-family:'DM Mono',monospace;}
+.prio-status-sel{font-size:11px;font-weight:500;padding:2px 16px 2px 6px;border-radius:8px;border:0.5px solid;cursor:pointer;font-family:'DM Sans',sans-serif;outline:none;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M1 1l3 3 3-3' stroke='%23888' stroke-width='1.2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 4px center;margin-top:4px;}
+
+/* Bloqueios */
+.bloqueio-card{background:var(--urgl);border:0.5px solid var(--urgb);border-radius:var(--rads);padding:12px 14px;margin-bottom:8px;position:relative;}
+.bloqueio-txt{font-size:13px;color:var(--urg);line-height:1.5;}
+.bloqueio-meta{font-size:11px;color:var(--urg);opacity:.7;margin-top:4px;}
+.bloqueio-del{position:absolute;top:8px;right:8px;background:none;border:none;cursor:pointer;color:var(--urg);opacity:.5;font-size:13px;padding:2px 4px;border-radius:4px;}
+.bloqueio-del:hover{opacity:1;}
+.add-bloqueio{font-size:12px;color:var(--urg);background:none;border:0.5px dashed var(--urgb);border-radius:8px;padding:6px 14px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;width:100%;text-align:center;}
+.add-bloqueio:hover{background:var(--urgl);border-style:solid;}
+
+/* Saúde do projeto (mini card no topo) */
+.saude-strip{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;}
+.saude-card{flex:1;min-width:120px;background:var(--surf);border:0.5px solid var(--bd);border-radius:var(--rads);padding:12px 14px;text-align:center;}
+.saude-num{font-size:24px;font-weight:300;letter-spacing:-0.02em;line-height:1;}
+.saude-lbl{font-size:11px;color:var(--tx3);margin-top:3px;}
+
+/* Milestone próximo no topo da home */
+.home-ms{display:flex;align-items:center;gap:14px;padding:12px 16px;background:var(--surf);border:0.5px solid var(--nb);border-radius:var(--rads);margin-bottom:16px;}
+.home-ms-dias{font-size:28px;font-weight:300;color:var(--n);letter-spacing:-0.03em;line-height:1;}
+.home-ms-info{flex:1;}
+.home-ms-label{font-size:13px;font-weight:500;color:var(--tx);}
+.home-ms-data{font-size:11px;color:var(--tx3);margin-top:2px;}
+.home-ms-fase{font-size:10px;padding:2px 7px;border-radius:6px;background:var(--nl);color:var(--n);font-weight:500;}
+
+/* Cards de links úteis */
+.link-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;padding:4px 0;}
+.link-card{background:var(--surf);border:0.5px solid var(--bd);border-radius:var(--rad);padding:18px 16px;cursor:pointer;transition:border-color .15s,box-shadow .15s;position:relative;text-decoration:none;display:block;}
+.link-card:hover{border-color:var(--n);box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.link-card-emoji{font-size:28px;margin-bottom:10px;line-height:1;}
+.link-card-nome{font-size:14px;font-weight:600;color:var(--n);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.link-card-desc{font-size:12px;color:var(--tx3);line-height:1.45;}
+.link-card-edit{position:absolute;top:8px;right:8px;background:none;border:none;cursor:pointer;font-size:12px;color:var(--tx3);opacity:0;transition:opacity .15s;padding:2px 5px;border-radius:4px;}
+.link-card:hover .link-card-edit{opacity:1;}
+.link-card-empty{border-style:dashed;display:flex;align-items:center;justify-content:center;min-height:100px;font-size:13px;color:var(--tx3);}
+
+/* Tarefa concluída na view de prioridades */
+.prio-card.done{opacity:.45;}
+.done-title{text-decoration:line-through;color:var(--tx3);}
+
+/* Tarefa editável inline */
+.task-edit-inp{width:100%;font-size:14px;font-family:'DM Sans',sans-serif;background:var(--bg);border:0.5px solid var(--bds);border-radius:6px;padding:4px 8px;outline:none;color:var(--tx);line-height:1.4;}
+.task-edit-inp:focus{border-color:var(--n);}
 </style>
 </head>
 <body>
@@ -548,11 +658,21 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);min-h
       <input type="hidden" id="at-proj">
       <div class="mf"><label class="ml" for="mt-t">Tarefa</label>
         <input class="mi" id="mt-t" placeholder="Descreva a tarefa..."></div>
+      <div class="mf"><label class="ml" for="mt-fase">Fase</label>
+        <select class="msel" id="mt-fase">
+          <option value="">— sem fase —</option>
+          <option value="E1">E1: Diagnóstico Interno</option>
+          <option value="E2">E2: Escuta Externa</option>
+          <option value="MA">MA: Escuta Alunos</option>
+          <option value="E3">E3: Análise Estratégica</option>
+          <option value="E4">E4: Workshop</option>
+          <option value="E5">E5: Consolidação</option>
+        </select></div>
       <div class="mf"><label class="ml" for="mt-w">Responsável</label>
         <select class="msel" id="mt-w">
-          <option>Lele</option><option>Luana</option><option>Colaborador</option>
-          <option>Lele + Luana</option><option>Lele + Colaborador</option>
-          <option>Luana + Colaborador</option><option>ALL</option>
+          <option>Lele</option><option>Luana</option><option>Pedro</option>
+          <option>Lele + Luana</option><option>Lele + Pedro</option>
+          <option>Luana + Pedro</option><option>ALL</option>
         </select></div>
       <div class="mf"><label class="ml" for="mt-d">Deadline</label>
         <input class="mi" id="mt-d" placeholder="ex: 05/04" inputmode="numeric"></div>
@@ -567,7 +687,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--tx);min-h
         </select></div>
       <div class="mf"><label class="ml" for="mt-b">Adicionado por</label>
         <select class="msel" id="mt-b">
-          <option>Lele</option><option>Luana</option><option>Colaborador</option>
+          <option>Lele</option><option>Luana</option><option>Pedro</option>
         </select></div>
       <div class="merr" id="mt-e"></div>
       <div class="ma">
@@ -731,12 +851,12 @@ const FB={
 // Edite aqui para alterar os milestones de um novo deploy.
 function DEFAULT_MILESTONES_Q(){
   return [
-    // E1 — Diagnóstico
+    // E1 — Diagnóstico (em andamento agora)
     {id:'ms_e1_1', label:'Kickoff realizado',                date:'29/04', phaseId:'E1', ts:Date.now()},
     {id:'ms_e1_2', label:'Entrevistas internas concluídas',  date:'15/05', phaseId:'E1', ts:Date.now()},
     {id:'ms_e1_3', label:'Síntese diagnóstico entregue',     date:'22/05', phaseId:'E1', ts:Date.now()},
-    // E2 — Escuta Externa
-    {id:'ms_e2_1', label:'Roteiro de escuta aprovado',       date:'29/04', phaseId:'E2', ts:Date.now()},
+    // E2 — Escuta Externa (começa maio)
+    {id:'ms_e2_1', label:'Roteiro de escuta aprovado',       date:'06/05', phaseId:'E2', ts:Date.now()},
     {id:'ms_e2_2', label:'Escuta com escolas concluída',     date:'25/05', phaseId:'E2', ts:Date.now()},
     {id:'ms_e2_3', label:'Síntese escuta externa entregue',  date:'16/06', phaseId:'E2', ts:Date.now()},
     // E3 — Análise
@@ -764,15 +884,15 @@ const TDEFS=[
   {id:'e1_11',p:'q',pri:0, title:'Reunião de kickoff com líderes',                    who:'Lele',         date:'29/04',        done:false},
   {id:'e1_12',p:'q',pri:1, title:'Organização e agendamento de entrevistas',           who:'Luana',        date:'23/04–07/05',  done:false},
   {id:'e1_13',p:'q',pri:2, title:'Entrevistas com pessoas-chave (até 8)',              who:'Luana',        date:'27/04–15/05',  done:false},
-  {id:'e1_14',p:'q',pri:3, title:'Estudo de materiais e pesquisas internas',           who:'Colaborador',  date:'24/04–14/05',  done:false},
+  {id:'e1_14',p:'q',pri:3, title:'Estudo de materiais e pesquisas internas',           who:'Pedro',  date:'24/04–14/05',  done:false},
   {id:'e1_15',p:'q',pri:4, title:'Síntese e análise do diagnóstico',                  who:'Lele',         date:'18/05–22/05',  done:false},
 
   // ── E2: Escuta Externa e Mercado ───────────────────────────────────────────
   {id:'e2_21',p:'q',pri:5, title:'Definição de lista e aprovação de roteiro',          who:'Lele + Luana', date:'23/04–29/04',  done:false},
   {id:'e2_22',p:'q',pri:6, title:'Agendamento das conversas externas',                who:'Luana',        date:'29/04–27/05',  done:false},
   {id:'e2_23',p:'q',pri:7, title:'Conversas com 6 clientes-chave (escolas)',           who:'Luana',        date:'06/05–25/05',  done:false},
-  {id:'e2_24',p:'q',pri:8, title:'Entrevistas com 10 famílias',                       who:'Colaborador',  date:'13/05–10/06',  done:false},
-  {id:'e2_25',p:'q',pri:9, title:'Entrevista com cliente perdido + prospect',          who:'Colaborador',  date:'13/05–26/05',  done:false},
+  {id:'e2_24',p:'q',pri:8, title:'Entrevistas com 10 famílias',                       who:'Pedro',  date:'13/05–10/06',  done:false},
+  {id:'e2_25',p:'q',pri:9, title:'Entrevista com cliente perdido + prospect',          who:'Pedro',  date:'13/05–26/05',  done:false},
   {id:'e2_26',p:'q',pri:10,title:'Análise de posicionamento e concorrência',           who:'Lele',         date:'23/04–29/04',  done:false},
   {id:'e2_27',p:'q',pri:11,title:'Reunião de inteligência de mercado — Grupo Raízes',  who:'Lele',         date:'04/05–08/05',  done:false},
   {id:'e2_28',p:'q',pri:12,title:'Síntese da escuta externa',                         who:'Luana',        date:'10/06–16/06',  done:false},
@@ -787,44 +907,72 @@ const TDEFS=[
   // ── E4: Workshop de Consolidação Estratégica ───────────────────────────────
   {id:'e4_41',p:'q',pri:18,title:'Planejamento e roteiro do workshop',                who:'Lele',         date:'26/06–02/07',  done:false},
   {id:'e4_42',p:'q',pri:19,title:'Produção de materiais e apresentações',             who:'Lele + Luana', date:'02/07–12/08',  done:false},
-  {id:'e4_43',p:'q',pri:20,title:'Atualização da pesquisa de gerações (pocket)',       who:'Colaborador',  date:'22/04–20/05',  done:false},
+  {id:'e4_43',p:'q',pri:20,title:'Atualização da pesquisa de gerações (pocket)',       who:'Pedro',  date:'22/04–20/05',  done:false},
   {id:'e4_44',p:'q',pri:21,title:'WORKSHOP — Facilitação (8h)',                       who:'ALL',          date:'13/08–14/08',  done:false},
   {id:'e4_45',p:'q',pri:22,title:'Consolidação dos outputs do workshop',               who:'Luana',        date:'14/08–20/08',  done:false},
 
   // ── E5: Consolidação e Diretrizes de Governança ────────────────────────────
   {id:'e5_51',p:'q',pri:23,title:'Elaboração do documento síntese final',             who:'Lele',         date:'14/08–27/08',  done:false},
   {id:'e5_52',p:'q',pri:24,title:'Construção da matriz de responsabilidades',          who:'Luana',        date:'14/08–27/08',  done:false},
-  {id:'e5_53',p:'q',pri:25,title:'Recomendações de rituais e continuidade',            who:'Colaborador',  date:'27/08–02/09',  done:false},
+  {id:'e5_53',p:'q',pri:25,title:'Recomendações de rituais e continuidade',            who:'Pedro',  date:'27/08–02/09',  done:false},
   {id:'e5_54',p:'q',pri:26,title:'Reunião de entrega final',                          who:'ALL',          date:'02/09–09/09',  done:false},
 
   // ── MA: Módulo Alunos (opcional — 2 escolas piloto) ────────────────────────
-  {id:'ma_11',p:'q',pri:27,title:'MA — Design metodológico das oficinas',              who:'Colaborador',  date:'24/04–08/05',  done:false},
-  {id:'ma_12',p:'q',pri:28,title:'MA — Criação dos materiais de aplicação (kits)',     who:'Colaborador',  date:'08/05–27/05',  done:false},
-  {id:'ma_13',p:'q',pri:29,title:'MA — Kit de documentação para escolas e famílias',   who:'Colaborador',  date:'08/05–18/05',  done:false},
-  {id:'ma_p11',p:'q',pri:30,title:'MA Piloto 1 — Articulação com escola',              who:'Colaborador',  date:'18/05–05/06',  done:false},
-  {id:'ma_p12',p:'q',pri:31,title:'MA Piloto 1 — Envio de documentação e retorno',     who:'Colaborador',  date:'05/06–15/06',  done:false},
-  {id:'ma_p13',p:'q',pri:32,title:'MA Piloto 1 — Aplicação Caixa dos Sabores',         who:'Colaborador',  date:'15/06–23/06',  done:false},
-  {id:'ma_p14',p:'q',pri:33,title:'MA Piloto 1 — Aplicação Lab de Alimentação',        who:'Colaborador',  date:'15/06–23/06',  done:false},
-  {id:'ma_p21',p:'q',pri:34,title:'MA Piloto 2 — Articulação com escola',              who:'Colaborador',  date:'18/05–29/05',  done:false},
-  {id:'ma_p22',p:'q',pri:35,title:'MA Piloto 2 — Envio de documentação e retorno',     who:'Colaborador',  date:'29/05–09/06',  done:false},
-  {id:'ma_p23',p:'q',pri:36,title:'MA Piloto 2 — Aplicação Caixa dos Sabores',         who:'Colaborador',  date:'09/06–17/06',  done:false},
-  {id:'ma_p24',p:'q',pri:37,title:'MA Piloto 2 — Aplicação Lab de Alimentação',        who:'Colaborador',  date:'09/06–17/06',  done:false},
+  {id:'ma_11',p:'q',pri:27,title:'MA — Design metodológico das oficinas',              who:'Pedro',  date:'24/04–08/05',  done:false},
+  {id:'ma_12',p:'q',pri:28,title:'MA — Criação dos materiais de aplicação (kits)',     who:'Pedro',  date:'08/05–27/05',  done:false},
+  {id:'ma_13',p:'q',pri:29,title:'MA — Kit de documentação para escolas e famílias',   who:'Pedro',  date:'08/05–18/05',  done:false},
+  {id:'ma_p11',p:'q',pri:30,title:'MA Piloto 1 — Articulação com escola',              who:'Pedro',  date:'18/05–05/06',  done:false},
+  {id:'ma_p12',p:'q',pri:31,title:'MA Piloto 1 — Envio de documentação e retorno',     who:'Pedro',  date:'05/06–15/06',  done:false},
+  {id:'ma_p13',p:'q',pri:32,title:'MA Piloto 1 — Aplicação Caixa dos Sabores',         who:'Pedro',  date:'15/06–23/06',  done:false},
+  {id:'ma_p14',p:'q',pri:33,title:'MA Piloto 1 — Aplicação Lab de Alimentação',        who:'Pedro',  date:'15/06–23/06',  done:false},
+  {id:'ma_p21',p:'q',pri:34,title:'MA Piloto 2 — Articulação com escola',              who:'Pedro',  date:'18/05–29/05',  done:false},
+  {id:'ma_p22',p:'q',pri:35,title:'MA Piloto 2 — Envio de documentação e retorno',     who:'Pedro',  date:'29/05–09/06',  done:false},
+  {id:'ma_p23',p:'q',pri:36,title:'MA Piloto 2 — Aplicação Caixa dos Sabores',         who:'Pedro',  date:'09/06–17/06',  done:false},
+  {id:'ma_p24',p:'q',pri:37,title:'MA Piloto 2 — Aplicação Lab de Alimentação',        who:'Pedro',  date:'09/06–17/06',  done:false},
   {id:'ma_31',p:'q',pri:38,title:'MA — Análise e síntese cruzada dos insights',        who:'Lele + Luana', date:'25/06–08/07',  done:false},
   {id:'ma_32',p:'q',pri:39,title:'MA — Documento de insights e recomendações',         who:'Lele',         date:'25/06–08/07',  done:false},
-  {id:'ma_33',p:'q',pri:40,title:'MA — Curadoria de material visual dos alunos',       who:'Colaborador',  date:'25/06–08/07',  done:false},
+  {id:'ma_33',p:'q',pri:40,title:'MA — Curadoria de material visual dos alunos',       who:'Pedro',  date:'25/06–08/07',  done:false},
   {id:'ma_34',p:'q',pri:41,title:'MA — Elaboração dos materiais de apresentação',      who:'Lele + Luana', date:'25/06–10/07',  done:false},
   {id:'ma_35',p:'q',pri:42,title:'MA — Apresentação final (Gustavo + lideranças)',     who:'ALL',          date:'11/07',        done:false},
 ];
 
-// Fases do projeto (alinhadas com XLSX)
-const QP=[
-  {id:'E1',label:'E1: Diagnóstico'},
-  {id:'E2',label:'E2: Escuta Externa, Interna e Alunos'},
-  {id:'E3',label:'E3: Análise e Estratégia'},
-  {id:'E4',label:'E4: WS Estratégico'},
-  {id:'E5',label:'E5: Consolidação e Diretrizes'},
-  {id:'MA',label:'MA: Módulo Alunos'},
+// ── FASES: estrutura central do projeto ──────────────────────────────────────
+// Ordem reflete a sequência real do projeto.
+// cor = identidade visual de cada fase em cards, pills e timeline.
+// QP mantido como alias para não quebrar referências existentes.
+const FASES = [
+  { id:'E1', label:'Diagnóstico Interno',  labelCurto:'Diagnóstico',  cor:'#2A6B6B', ordem:0 },
+  { id:'E2', label:'Escuta Externa',       labelCurto:'Escuta',       cor:'#185FA5', ordem:1 },
+  { id:'MA', label:'Escuta Alunos',        labelCurto:'Alunos',       cor:'#533AB7', ordem:2 },
+  { id:'E3', label:'Análise Estratégica',  labelCurto:'Análise',      cor:'#854F0B', ordem:3 },
+  { id:'E4', label:'Workshop',             labelCurto:'Workshop',     cor:'#993556', ordem:4 },
+  { id:'E5', label:'Consolidação',         labelCurto:'Consolidação', cor:'#3B6D11', ordem:5 },
 ];
+const QP = FASES; // alias — mantém compatibilidade
+
+// Retorna metadados de uma fase por ID
+function getFase(id){ return FASES.find(f=>f.id===id)||null; }
+
+// ── Mapa estático: ID de tarefa → fase ───────────────────────────────────────
+// Permite que qualquer tarefa de TDEFS saiba sua fase sem campo extra no objeto.
+// Tarefas customizadas usam o campo .fase diretamente.
+const TAREFA_FASE = {
+  // E1
+  e1_11:'E1',e1_12:'E1',e1_13:'E1',e1_14:'E1',e1_15:'E1',
+  // E2
+  e2_21:'E2',e2_22:'E2',e2_23:'E2',e2_24:'E2',e2_25:'E2',e2_26:'E2',e2_27:'E2',e2_28:'E2',
+  // E3
+  e3_31:'E3',e3_32:'E3',e3_33:'E3',e3_34:'E3',e3_35:'E3',
+  // E4
+  e4_41:'E4',e4_42:'E4',e4_43:'E4',e4_44:'E4',e4_45:'E4',
+  // E5
+  e5_51:'E5',e5_52:'E5',e5_53:'E5',e5_54:'E5',
+  // MA
+  ma_11:'MA',ma_12:'MA',ma_13:'MA',
+  ma_p11:'MA',ma_p12:'MA',ma_p13:'MA',ma_p14:'MA',
+  ma_p21:'MA',ma_p22:'MA',ma_p23:'MA',ma_p24:'MA',
+  ma_31:'MA',ma_32:'MA',ma_33:'MA',ma_34:'MA',ma_35:'MA',
+};
 
 // Status de tarefas (ordem = prioridade de exibição)
 const SM_ORDER=['atr','pri','agu','and','ibs','pau'];
@@ -967,11 +1115,14 @@ function excelDateToJS(serial){
    BLOCO 4 — ESTADO DA APLICAÇÃO (variáveis de controle)
 ═══════════════════════════════════════════════════════════════════════ */
 let db, S = null;
-let V = 'all';       // aba ativa (interno)
-let showDN = false;  // mostrar tarefas concluídas (Quitanda)
-let showDR = {};     // mostrar concluídas por projeto customizado
-let EC = {};         // comentários expandidos por tarefa
+let V = 'tarefas'; // aba ativa — default: tarefas (era 'all')
+let showDN = false;
+let showDR = {};
+let EC = {};
 let muralFilter = 'all';
+let faseGroupOpen = {}; // controla quais grupos de fase estão abertos
+let prioGroupOpen = {}; // controla quais grupos de prioridade estão abertos
+let bN_global = null;   // cache do calcFases para uso em buildTasksByFase
 
 /* ═══════════════════════════════════════════════════════════════════════
    BLOCO 5 — UTILITÁRIOS
@@ -1111,17 +1262,27 @@ async function init(){
           // Remove status das IDs antigas
           if(S.taskStatus) oldIds.forEach(id=>delete S.taskStatus[id]);
         }
+        // ── BUG FIX: Limpar taskOrder com IDs inválidos ──────────────────
+        // taskOrder pode ter IDs velhos (q0–q21) que fazem projTasks()
+        // retornar apenas 1 tarefa (a única cujo ID ainda existe).
+        // Solução: zerar a ordem e deixar o sort natural reconstruir.
+        if(S.taskOrder&&S.taskOrder['q']){
+          const validIds = new Set(TDEFS.map(t=>t.id));
+          const currentOrder = S.taskOrder['q'];
+          const allValid = currentOrder.every(id=>validIds.has(id));
+          if(!allValid){
+            delete S.taskOrder['q']; // limpa — sort natural assume
+            ch=true;
+          }
+        }
         S._tasksV2=true; ch=true;
       }
 
-      // ── MIGRAÇÃO: Popular milestones padrão se ainda estão vazios ───────
-      if(!S._milestonesSeeded){
+      // ── MIGRAÇÃO: Recriar milestones com datas corrigidas (E2 estava errada) ──
+      if(!S._milestonesV2){
         if(!S.projectMilestones) S.projectMilestones={};
-        if(!Array.isArray(S.projectMilestones['q'])||S.projectMilestones['q'].length===0){
-          S.projectMilestones['q'] = DEFAULT_MILESTONES_Q();
-          ch=true;
-        }
-        S._milestonesSeeded=true; ch=true;
+        S.projectMilestones['q'] = DEFAULT_MILESTONES_Q();
+        S._milestonesV2=true; ch=true;
       }
 
       // Limpar alertas de texto de milestones legados
@@ -1146,6 +1307,11 @@ async function init(){
       if(!S.clienteReuniao||typeof S.clienteReuniao!=='object'){S.clienteReuniao={tipo:'',data:''};ch=true;}
       if(!S.clienteAtualizadoPor){S.clienteAtualizadoPor='Lele';ch=true;}
       if(!S.clienteAtualizadoEm){S.clienteAtualizadoEm='';ch=true;}
+
+      // ── MIGRAÇÃO: Campos novos (bloqueios, edições de tarefas) ─────────
+      if(!Array.isArray(S.bloqueios)){S.bloqueios=[];ch=true;}
+      if(!S.taskEdits||typeof S.taskEdits!=='object'||Array.isArray(S.taskEdits)){S.taskEdits={};ch=true;}
+      if(!Array.isArray(S.homeObs)){S.homeObs=[];ch=true;}
 
       if(ch) await setDoc(ref, S);
     }
@@ -1193,6 +1359,7 @@ function fresh(){
     // Campos do modo cliente
     clienteLinks:[], clienteContatos:[], clienteMensagem:'', clienteReuniao:{tipo:'',data:''},
     clienteAtualizadoPor:'Lele', clienteAtualizadoEm: new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}),
+    bloqueios:[], taskEdits:{}, homeObs:[],
     _ts: Date.now()
   };
 }
@@ -1216,6 +1383,98 @@ async function save(msg){
    BLOCO 8 — LÓGICA DE DADOS (tarefas, progresso, milestones)
 ═══════════════════════════════════════════════════════════════════════ */
 
+/* ── Motor de priorização ────────────────────────────────────────────────────
+   Calcula um score para cada tarefa e retorna grupos prontos para renderizar.
+   
+   SCORE = peso_status + peso_prazo + peso_fase + peso_milestone
+   
+   Grupos resultantes:
+   - AGORA    score >= 80  → atrasadas e críticas
+   - SEMANA   score 25-79  → vencem em 7 dias ou são prioridade
+   - RADAR    score 5-24   → próximas 2 semanas
+   - DEPOIS   score < 5    → sem urgência imediata
+══════════════════════════════════════════════════════════════════════ */
+function calcPrioridades(tasks){
+  const faseAtiva = bN_global ? bN_global.faseAtiva : null;
+  const msProximos = getAllMilestones().filter(m=>m.days>=0&&m.days<=14);
+
+  // Conjunto de fases com milestone próximo
+  const fasesMsProximo = new Set(
+    msProximos.map(m=>(((S.projectMilestones||{})['q']||[]).find(x=>x.id===m.id)||{}).phaseId).filter(Boolean)
+  );
+
+  function parseDeadline(dateStr){
+    if(!dateStr||dateStr==='a definir') return null;
+    // Pega a data de FIM (depois do –) se for intervalo, senão a única data
+    const parts = dateStr.split('–');
+    const target = parts.length>1 ? parts[1].trim() : parts[0].trim();
+    const m = target.match(/(\d{1,2})\/(\d{1,2})/);
+    if(!m) return null;
+    return new Date(2026, parseInt(m[2])-1, parseInt(m[1]));
+  }
+
+  function scoreTask(t){
+    if(t.done) return -1;
+    let score = 0;
+    const stKey = (S.taskStatus||{})[t.id]||'and';
+    const deadline = parseDeadline(t.date);
+    const hoje = new Date(TODAY); hoje.setHours(0,0,0,0);
+    const diasAteDeadline = deadline ? Math.ceil((deadline-hoje)/86400000) : 999;
+
+    // 1. Peso por status
+    const pesoStatus = {atr:100, pri:80, agu:20, and:0, ibs:5, pau:-10};
+    score += pesoStatus[stKey]||0;
+
+    // 2. Peso por prazo (só se tiver deadline real)
+    if(deadline){
+      if(diasAteDeadline<0)  score += 60;  // já passou
+      else if(diasAteDeadline<=1)  score += 50;  // hoje/amanhã
+      else if(diasAteDeadline<=3)  score += 30;  // 3 dias
+      else if(diasAteDeadline<=7)  score += 15;  // semana
+      else if(diasAteDeadline<=14) score += 5;   // 2 semanas
+    }
+
+    // 3. Peso por fase ativa
+    const faseTarefa = getTarefaFase(t);
+    if(faseAtiva && faseTarefa===faseAtiva.id) score += 20;
+
+    // 4. Peso por milestone próximo conectado
+    if(faseTarefa && fasesMsProximo.has(faseTarefa)) score += 25;
+
+    return { score, stKey, deadline, diasAteDeadline };
+  }
+
+  const scored = tasks
+    .filter(t=>!t.done)
+    .map(t=>({ ...t, _s: scoreTask(t) }))
+    .filter(t=>t._s.score>=0)
+    .sort((a,b)=>b._s.score-a._s.score);
+
+  return {
+    agora:  scored.filter(t=>t._s.score>=80),
+    semana: scored.filter(t=>t._s.score>=25&&t._s.score<80),
+    radar:  scored.filter(t=>t._s.score>=5&&t._s.score<25),
+    depois: scored.filter(t=>t._s.score<5),
+    total:  scored.length,
+  };
+}
+
+/* Getters que respeitam edições manuais salvas em S.taskEdits */
+function getTarefaTitle(t){
+  return (S.taskEdits&&S.taskEdits[t.id]&&S.taskEdits[t.id].title) || t.title;
+}
+function getTarefaDate(t){
+  return (S.taskEdits&&S.taskEdits[t.id]&&S.taskEdits[t.id].date) || t.date;
+}
+function getTarefaWho(t){
+  return (S.taskEdits&&S.taskEdits[t.id]&&S.taskEdits[t.id].who) || t.who || '';
+}
+function getTarefaFase(t){
+  // Ordem: edição manual > campo .fase > mapa estático TAREFA_FASE
+  if(S.taskEdits&&S.taskEdits[t.id]&&'fase' in S.taskEdits[t.id]) return S.taskEdits[t.id].fase||null;
+  return t.fase || TAREFA_FASE[t.id] || null;
+}
+
 // Lista de tarefas de um projeto, ordenada
 function projTasks(proj){
   const defs = TDEFS.filter(t=>t.p===proj).map(t=>({...t, done:getDone(t.id), custom:false}));
@@ -1237,21 +1496,49 @@ function projTasks(proj){
   });
 }
 
-// Calcular progresso do projeto baseado em milestones
-function calcBar(proj){
+// ── calcFases: calcula progresso e fase ativa automaticamente ────────────────
+// Lógica: para cada fase, verifica quantos milestones já passaram da data.
+// Fase ativa = primeira fase com milestones ainda no futuro.
+// Se não há milestones numa fase, ela é ignorada no cálculo de progresso.
+// Mantém assinatura compatível com calcBar (retorna mesmos campos).
+function calcFases(proj){
   const allMs = (S.projectMilestones||{})[proj]||[];
-  const phaseScores = QP.map(function(qp){
-    const phMs = allMs.filter(m=>m.phaseId===qp.id);
-    if(!phMs.length) return 0;
+
+  const faseScores = FASES.map(function(fase){
+    const phMs = allMs.filter(m=>m.phaseId===fase.id);
+    if(!phMs.length) return null; // sem milestones = fase não avaliável
     const doneCnt = phMs.filter(m=>{ const d=parseMsDate(m.date); return d&&d<TODAY; }).length;
-    return doneCnt/phMs.length;
+    return doneCnt/phMs.length; // 0.0 → 1.0
   });
-  const pct = Math.round(phaseScores.reduce((a,b)=>a+b,0)/QP.length*100);
-  let cur = QP.length-1;
-  for(let i=0;i<phaseScores.length;i++){ if(phaseScores[i]<1){ cur=i; break; } }
+
+  // Para o progresso geral, usa só as fases avaliáveis
+  const avaliaveis = faseScores.filter(s=>s!==null);
+  const pct = avaliaveis.length
+    ? Math.round(avaliaveis.reduce((a,b)=>a+b,0)/avaliaveis.length*100)
+    : 0;
+
+  // Fase ativa = primeira com score < 1 (ou sem milestones mas com tarefas ativas)
+  let curIdx = FASES.length-1;
+  for(let i=0;i<faseScores.length;i++){
+    if(faseScores[i]===null||faseScores[i]<1){ curIdx=i; break; }
+  }
+
+  // Fase ativa como objeto
+  const faseAtiva = FASES[curIdx];
+
   const done = allMs.filter(m=>{ const d=parseMsDate(m.date); return d&&d<TODAY; }).length;
-  return {pct, done, total:allMs.length, cur, phaseScores};
+
+  return {
+    pct,
+    done,
+    total: allMs.length,
+    cur: curIdx,          // índice numérico (compat. com código antigo)
+    faseAtiva,            // objeto {id, label, cor, ...}
+    phaseScores: faseScores.map(s=>s===null?0:s), // compat.
+  };
 }
+// Alias para compatibilidade com código existente que chama calcBar
+const calcBar = calcFases;
 
 // Metadados de projeto (cor, label)
 function getProjMeta(projId){
@@ -1290,6 +1577,8 @@ function getNearestMilestone(projId){
 function render(){
   const el = document.getElementById('app');
   if(!el||!S) return;
+  // Atualiza cache de fase ativa antes de qualquer render
+  bN_global = calcFases('q');
   try{
     el.innerHTML = CLIENT_MODE ? buildClienteHTML() : buildHTML();
     attachEv();
@@ -1511,22 +1800,40 @@ function buildClienteHTML(){
 
 /* ═══════════════════════════════════════════════════════════════════════
    BLOCO 11 — MODO INTERNO (buildHTML)
-   Renderiza o dashboard completo do time.
+   Cockpit de único projeto: SOW × Quitanda Escolas.
+   Navegação simplificada — fases como eixo central.
 ═══════════════════════════════════════════════════════════════════════ */
 function buildHTML(){
-  const bN = calcBar('q');
+  const bN = calcFases('q');
   const nat = projTasks('q');
-  const natP = nat.filter(t=>!t.done), natD = nat.filter(t=>t.done);
   const allMs = getAllMilestones();
-  const hidden = Array.isArray(S.hiddenProps) ? S.hiddenProps : [];
-  const allProps = [...(S.customProps||[])];
+  const prios = calcPrioridades(nat);
+  const nm = getNearestMilestone('q');
 
-  // Topbar
+  // ── % por datas reais (início 29/04 → fim 09/09/2026) ────────────────
+  const PROJ_START = new Date(2026, 3, 29); // 29/04/2026
+  const PROJ_END   = new Date(2026, 8,  9); // 09/09/2026
+  const totalDias  = PROJ_END - PROJ_START;
+  const diasPassados = Math.max(0, TODAY - PROJ_START);
+  const pctTempo   = Math.min(100, Math.round(diasPassados / totalDias * 100));
+
+  // ── KPIs ──────────────────────────────────────────────────────────────
+  const nAtrasadas = nat.filter(t=>!t.done&&(S.taskStatus||{})[t.id]==='atr').length;
+  const nPrio = prios.agora.length + prios.semana.length;
+  const totalMs = ((S.projectMilestones||{})['q']||[]).length;
+
+  // ── Topbar ────────────────────────────────────────────────────────────
+  const faseCor = bN.faseAtiva ? bN.faseAtiva.cor : '#2A6B6B';
   const topbar = `
     <div class="topbar">
-      <div class="brand"><h1>SOW</h1><span>consultoria de estratégia</span></div>
+      <div class="brand" style="gap:10px">
+        <h1>SOW</h1>
+        <span>× Quitanda Escolas</span>
+        ${bN.faseAtiva
+          ? '<span style="font-size:12px;padding:3px 12px;border-radius:20px;background:'+faseCor+';color:#fff;font-weight:500">'+bN.faseAtiva.labelCurto+'</span>'
+          : ''}
+      </div>
       <div class="topbar-r">
-        <button class="btn-sm" onclick="B.openAddProject()" aria-label="Criar novo projeto">+ projeto</button>
         <div class="sync-badge" role="status" aria-live="polite">
           <div class="sync-dot" id="sd" aria-hidden="true"></div>
           <span id="sl">conectando...</span>
@@ -1534,181 +1841,399 @@ function buildHTML(){
       </div>
     </div>`;
 
-  // Thermo strip
-  const nmQ = getNearestMilestone('q');
-  const thermoStrip = '<div class="thermo-wrap"><div class="thermo-strip">'
-    + buildTC('q','📝 Quitanda Escolas', nmQ?nmQ.days:'-', nmQ?nmQ.label:'sem milestone', bN, QP, '#2A6B6B')
-    + (S.customProjects||[]).map(p=>buildTCCustom(p)).join('')
-    + buildPropsCard(allProps)
-    + '</div></div>';
+  // ── Faixa de KPIs ─────────────────────────────────────────────────────
+  const kpis = '<div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">'
+    +'<div style="flex:1.5;min-width:140px;background:'+faseCor+';border-radius:var(--rads);padding:14px 16px;color:#fff">'
+      +'<div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;opacity:.75;margin-bottom:4px">Fase ativa</div>'
+      +'<div style="font-size:15px;font-weight:600;line-height:1.25">'+(bN.faseAtiva?bN.faseAtiva.label:'—')+'</div>'
+    +'</div>'
+    +'<div class="saude-card"><div class="saude-num">'+totalMs+'</div><div class="saude-lbl">milestones<br>previstos</div></div>'
+    +'<div class="saude-card"><div class="saude-num" style="color:#D85A30">'+nPrio+'</div><div class="saude-lbl">tarefas<br>prioritárias</div></div>'
+    +'<div class="saude-card"><div class="saude-num" style="color:var(--urg)">'+nAtrasadas+'</div><div class="saude-lbl">tarefas<br>atrasadas</div></div>'
+    +'<div class="saude-card" title="Tempo decorrido desde 29/04 até 09/09/2026"><div class="saude-num">'+pctTempo+'%</div><div class="saude-lbl">do período<br>decorrido</div></div>'
+    +'</div>';
 
-  // Abas
-  const customTabsHTML = (S.customProjects||[]).map(p=>{
-    const isAct = V===p.id;
-    return '<button class="tab '+(isAct?'act-custom':'')+'" data-proj="'+p.id+'" style="'+(isAct?'color:'+p.color+';':'')+'" onclick="B.sv(this.dataset.proj)">'+(p.emoji||'📁')+' '+esc(p.name)+'</button>';
-  }).join('');
+  // ── Navegação — botões só aqui, não se repetem nas views ─────────────
+  const VIEWS = [
+    {id:'home',     label:'Esta semana'},
+    {id:'tarefas',  label:'Tarefas'},
+    {id:'mural',    label:'📌 Mural'},
+    {id:'links',    label:'Links úteis'},
+    {id:'timeline', label:'Cronograma'},
+    {id:'log',      label:'Updates'},
+  ];
+  const vEff = (!V||V==='all'||V==='q') ? 'home' : V;
+
+  // Botões de ação contextuais por view
+  const actionBtns = vEff==='home'||vEff==='tarefas'
+    ? '<button class="btn-sm" onclick="B.openAddMilestone(\'q\')" style="font-size:11px">+ milestone</button>'
+      +'<button class="add-btn add-btn-q" style="padding:5px 12px;font-size:12px" onclick="B.openAddTask(\'q\')">+ tarefa</button>'
+    : vEff==='links'
+      ? '<button class="add-btn add-btn-q" style="padding:5px 12px;font-size:12px" onclick="CL.addLink()">+ link</button>'
+      : vEff==='mural'
+        ? '<button class="mural-add-btn" onclick="B.openAddPostit()">+ nota</button>'
+        : '';
 
   const tabs = '<div class="tabs-wrap"><div class="tabs-nav">'
     +'<div class="tabs-projects">'
-    +'<button class="tab '+(V==='all'?'act':'')+'" onclick="B.sv(\'all\')">Visão geral</button>'
-    +'<button class="tab '+(V==='q'?'act-q':'')+'" style="'+(V==='q'?'color:#2A6B6B;':'')+'" onclick="B.sv(\'q\')">📝 Quitanda Escolas</button>'
-    +customTabsHTML
+    +VIEWS.map(v=>'<button class="tab '+(vEff===v.id?'act-n':'')+'" onclick="B.sv(\''+v.id+'\')" style="'+(vEff===v.id?'color:#2A6B6B;':'')+'">'+v.label+'</button>').join('')
     +'</div>'
-    +'<div class="tabs-sep"></div>'
-    +'<div class="tabs-views">'
-    +'<button class="tab tab-view '+(V==='mural'?'act':'')+'" onclick="B.sv(\'mural\')">📌 Mural</button>'
-    +'<button class="tab tab-view '+(V==='timeline'?'act':'')+'" onclick="B.sv(\'timeline\')">Timeline</button>'
-    +'<button class="tab tab-view '+(V==='arch'?'act':'')+'" onclick="B.sv(\'arch\')">Histórico</button>'
-    +'<button class="tab tab-view '+(V==='log'?'act':'')+'" onclick="B.sv(\'log\')">Updates</button>'
-    +'</div>'
+    +'<div class="tabs-views">'+actionBtns+'</div>'
     +'</div></div>';
 
-  // Views
-  const overview = buildOverview(nat, allMs);
+  // ── Views ─────────────────────────────────────────────────────────────
   const views = '<div>'
-    +'<div '+(V==='all'?'':'hidden')+'>'+overview+'</div>'
-    +'<div '+(V==='q'?'':'hidden')+'>'
-      +buildMsCard('q','#2A6B6B','q')
-      +buildAlerts('q',allMs)
-      +'<div class="add-bar">'
-        +buildDriveChip('q')
-        +'<button class="btn-sm" style="font-size:11px;color:var(--tx3)" onclick="B.archiveFixed(\'q\')">📦 arquivar</button>'
-        +'<button class="btn-sm" onclick="B.openAddMilestone(\'q\')">+ milestone</button>'
-        +'<button class="add-btn add-btn-q" onclick="B.openAddTask(\'q\')">+ tarefa</button>'
-      +'</div>'
-      +buildMsList('q','#2A6B6B')
-      +'<div class="sec">Tarefas pendentes</div>'
-      +'<div class="task-list">'+(natP.length?natP.map(t=>buildTask(t)).join(''):'<p class="empty">Todas as tarefas concluídas 🎉</p>')+'</div>'
-      +(natD.length?'<button class="done-tog" onclick="B.toggleDN()">'+(showDN?'▾':'▸')+' concluídas ('+natD.length+')</button>'+(showDN?'<div class="task-list" style="margin-top:8px">'+natD.map(t=>buildTask(t)).join('')+'</div>':''):'')
-    +'</div>'
-    +(S.customProjects||[]).map(p=>buildCustomView(p,allMs)).join('')
-    +'<div '+(V==='timeline'?'':'hidden')+'>'+buildTimeline(allMs)+'</div>'
-    +'<div '+(V==='arch'?'':'hidden')+'>'+buildArchive()+'</div>'
-    +'<div '+(V==='mural'?'':'hidden')+'>'+buildMural()+'</div>'
-    +'<div '+(V==='log'?'':'hidden')+'>'
+    +'<div '+(vEff==='home'?'':'hidden')+'>'+buildPrioridades(nat, bN, allMs, nm, prios)+'</div>'
+    +'<div '+(vEff==='tarefas'?'':'hidden')+'>'+buildTasksByFase(nat)+'</div>'
+    +'<div '+(vEff==='timeline'?'':'hidden')+'>'+buildTimeline(allMs)+'</div>'
+    +'<div '+(vEff==='arch'?'':'hidden')+'>'+buildArchive()+'</div>'
+    +'<div '+(vEff==='mural'?'':'hidden')+'>'+buildMural()+'</div>'
+    +'<div '+(vEff==='links'?'':'hidden')+'>'+buildLinks()+'</div>'
+    +'<div '+(vEff==='log'?'':'hidden')+'>'
       +'<div class="sec">Atualizações</div>'
       +'<div class="upd-log">'+[...(S.updates||[])].reverse().map(u=>'<div class="upd-entry">'+esc(u.text)+'<div class="upd-meta">'+ts(u.ts)+'</div></div>').join('')+'</div>'
     +'</div>'
     +'</div>';
 
-  return topbar + thermoStrip + tabs + views;
+  return topbar + kpis + tabs + views;
+}
+
+// ── Card cockpit: resumo visual do projeto com fases coloridas ────────────────
+function buildCockpitCard(bN, nm, allProps){
+  const cor = '#2A6B6B';
+
+  // Stepper de fases com cor individual
+  const stepperDots = FASES.map((f,i)=>{
+    const score = bN.phaseScores[i]||0;
+    const isAtiva = i===bN.cur;
+    const isDone = score>=1;
+    const dotCor = isDone||isAtiva ? f.cor : 'var(--bds)';
+    const dotStyle = isAtiva
+      ? 'width:12px;height:12px;border-radius:50%;background:'+f.cor+';box-shadow:0 0 0 3px '+f.cor+'33;flex-shrink:0;'
+      : isDone
+        ? 'width:9px;height:9px;border-radius:50%;background:'+f.cor+';opacity:.5;flex-shrink:0;'
+        : 'width:9px;height:9px;border-radius:50%;background:var(--surf);border:1.5px solid var(--bds);flex-shrink:0;box-sizing:border-box;';
+    return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">'
+      +'<div style="'+dotStyle+'"></div>'
+      +'<div style="font-size:9px;color:'+(isAtiva?f.cor:isDone?f.cor:'var(--tx3)')+';font-weight:'+(isAtiva?'700':'400')+'">'+f.id+'</div>'
+      +'</div>';
+  }).join('');
+
+  // Linha conectora entre dots
+  const stepperConnectors = FASES.map((f,i)=>{
+    if(i===0) return '';
+    const prev = bN.phaseScores[i-1]||0;
+    return '<div style="flex:1;height:1.5px;background:'+(prev>=1?FASES[i-1].cor:'var(--bd)')+';border-radius:1px;margin-bottom:14px;"></div>';
+  }).join('');
+
+  // Stepper completo intercalando dots e linhas
+  let stepperRow = '<div style="display:flex;align-items:center;margin-top:12px;">';
+  for(let i=0;i<FASES.length;i++){
+    if(i>0){
+      const prev = bN.phaseScores[i-1]||0;
+      stepperRow += '<div style="flex:1;height:1.5px;background:'+(prev>=1?FASES[i-1].cor:'var(--bd)')+';border-radius:1px;"></div>';
+    }
+    const f=FASES[i], score=bN.phaseScores[i]||0, isAtiva=i===bN.cur, isDone=score>=1;
+    const ds = isAtiva
+      ? 'width:13px;height:13px;border-radius:50%;background:'+f.cor+';box-shadow:0 0 0 3px '+f.cor+'33;flex-shrink:0;'
+      : isDone
+        ? 'width:9px;height:9px;border-radius:50%;background:'+f.cor+';opacity:.55;flex-shrink:0;'
+        : 'width:9px;height:9px;border-radius:50%;background:var(--surf);border:1.5px solid var(--bds);flex-shrink:0;box-sizing:border-box;';
+    stepperRow += '<div style="'+ds+'"></div>';
+  }
+  stepperRow += '</div>';
+  stepperRow += '<div style="display:flex;margin-top:5px;">'
+    +FASES.map((f,i)=>{
+      const isAtiva=i===bN.cur, isDone=(bN.phaseScores[i]||0)>=1;
+      return (i>0?'<div style="flex:1"></div>':'')
+        +'<div style="font-size:9px;color:'+(isAtiva?f.cor:isDone?f.cor:'var(--tx3)')+';font-weight:'+(isAtiva?'700':'400')+';text-align:center">'+f.id+'</div>';
+    }).join('')
+    +'</div>';
+
+  // Milestone próximo
+  const nmCard = nm
+    ? '<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:'+cor+'11;border:0.5px solid '+cor+'33;border-radius:8px;margin-top:12px">'
+      +'<div style="font-size:11px;color:'+cor+';font-weight:600;text-transform:uppercase;letter-spacing:.06em;flex-shrink:0">⚑ próximo</div>'
+      +'<div style="flex:1;font-size:13px;font-weight:500;color:var(--tx);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(nm.label)+'</div>'
+      +'<div style="font-size:22px;font-weight:300;color:'+cor+';flex-shrink:0">'+nm.days+'<span style="font-size:10px;color:var(--tx3)"> d</span></div>'
+      +'</div>'
+    : '';
+
+  // Alertas
+  const alertas = ((S.projectAlerts||{})['{q']||[]).concat(((S.projectAlerts||{})['q']||[])).filter(a=>a.id!=='__cleared__'&&a.text);
+  const alertBox = alertas.length
+    ? '<div style="margin-top:10px">'+alertas.slice(0,2).map(a=>{
+        const cor2=a.type==='red'?'var(--urg)':a.type==='amber'?'var(--p)':'var(--n)';
+        const bg=a.type==='red'?'var(--urgl)':a.type==='amber'?'var(--pl)':'var(--nl)';
+        return '<div style="font-size:12px;padding:6px 10px;border-radius:6px;background:'+bg+';color:'+cor2+';margin-bottom:4px">'+esc(a.text)+'</div>';
+      }).join('')+'</div>'
+    : '';
+
+  return '<div class="tc" style="width:100%;margin-bottom:20px;position:relative">'
+    +'<div style="position:absolute;top:0;left:0;right:0;height:3px;background:'+cor+';border-radius:var(--rad) var(--rad) 0 0"></div>'
+    +'<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">'
+      +'<div>'
+        +'<div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--tx3);margin-bottom:2px">Quitanda Escolas</div>'
+        +'<div style="font-size:26px;font-weight:300;color:'+cor+';letter-spacing:-0.03em;line-height:1">'+bN.pct+'%</div>'
+        +'<div style="font-size:12px;color:var(--tx2);margin-top:2px">'+(bN.total?bN.done+'/'+bN.total+' marcos':'sem marcos cadastrados')+'</div>'
+      +'</div>'
+      +'<div style="display:flex;gap:6px;flex-wrap:wrap">'
+        +buildDriveChip('q')
+        +'<button class="btn-sm" style="font-size:11px;color:var(--tx3)" onclick="B.openAddMilestone(\'q\')">+ milestone</button>'
+        +buildAlertsBtns('q')
+      +'</div>'
+    +'</div>'
+    +'<div style="margin-top:8px"><div style="height:5px;background:var(--bd);border-radius:3px;overflow:hidden"><div style="height:100%;background:'+cor+';width:'+bN.pct+'%;border-radius:3px;transition:width .6s"></div></div></div>'
+    +stepperRow
+    +nmCard
+    +alertBox
+    +'<div id="cockpit-alerts-full" style="margin-top:8px">'+buildAlerts('q',[])+'</div>'
+    +'</div>';
+}
+
+// Botão para adicionar alerta
+function buildAlertsBtns(proj){
+  return '<button class="btn-sm" style="font-size:11px;color:var(--tx3)" onclick="B.addAlert(\''+proj+'\')">+ alerta</button>';
+}
+
+// ── buildTasksByFase: tarefas agrupadas por fase ──────────────────────────────
+// É o novo coração da view de tarefas. Mostra cada fase como seção expansível,
+// com progresso interno, cor da fase, e todas as tarefas agrupadas.
+function buildTasksByFase(nat){
+  // Separar concluídas
+  const pending = nat.filter(t=>!t.done);
+  const done    = nat.filter(t=>t.done);
+
+  // Agrupar pendentes por fase
+  const byFase = {};
+  const semFase = [];
+  for(const t of pending){
+    const fId = getTarefaFase(t);
+    if(fId){ if(!byFase[fId]) byFase[fId]=[]; byFase[fId].push(t); }
+    else semFase.push(t);
+  }
+
+  let html = '';
+
+  // Renderiza cada fase na ordem correta
+  for(const fase of FASES){
+    const tasks = byFase[fase.id]||[];
+    const allFaseTasks = nat.filter(t=>getTarefaFase(t)===fase.id);
+    const doneFase = allFaseTasks.filter(t=>t.done).length;
+    const totalFase = allFaseTasks.length;
+    const pctFase = totalFase ? Math.round(doneFase/totalFase*100) : 0;
+    const isAtiva = bN_global && bN_global.faseAtiva && bN_global.faseAtiva.id===fase.id;
+
+    // Cabeçalho da fase
+    const faseKey = 'fase_open_'+fase.id;
+    const isOpen = faseGroupOpen[faseKey]!==false; // default: aberto
+
+    html += '<div style="margin-bottom:16px">'
+      +'<div onclick="B.toggleFaseGroup(\''+fase.id+'\')" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:8px 0;user-select:none">'
+        +'<div style="width:10px;height:10px;border-radius:50%;background:'+fase.cor+';flex-shrink:0;'+(isAtiva?'box-shadow:0 0 0 3px '+fase.cor+'33;':'')+'"></div>'
+        +'<div style="font-size:12px;font-weight:600;color:'+(tasks.length||isAtiva?fase.cor:'var(--tx3)')+';flex:1">'
+          +fase.label
+          +(isAtiva?'<span style="font-size:10px;background:'+fase.cor+'22;color:'+fase.cor+';padding:1px 8px;border-radius:10px;margin-left:8px;font-weight:700">fase atual</span>':'')
+        +'</div>'
+        +(totalFase?'<div style="font-size:11px;color:var(--tx3)">'+doneFase+'/'+totalFase+'</div>':'')
+        +'<div style="font-size:11px;color:var(--tx3)">'+(isOpen?'▾':'▸')+'</div>'
+      +'</div>';
+
+    if(isOpen){
+      if(tasks.length){
+        html += '<div class="task-list">'+tasks.map(t=>buildTask(t)).join('')+'</div>';
+      } else if(totalFase===0){
+        html += '<div style="font-size:12px;color:var(--tx3);padding:4px 0 4px 20px">Nenhuma tarefa cadastrada nesta fase.</div>';
+      } else {
+        html += '<div style="font-size:12px;color:var(--n);padding:4px 0 4px 20px">✓ Todas as tarefas concluídas</div>';
+      }
+    }
+    html += '</div>';
+  }
+
+  // Tarefas sem fase
+  if(semFase.length){
+    html += '<div style="margin-bottom:16px">'
+      +'<div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--tx3);margin-bottom:8px">Sem fase</div>'
+      +'<div class="task-list">'+semFase.map(t=>buildTask(t)).join('')+'</div>'
+      +'</div>';
+  }
+
+  // Concluídas (todas as fases)
+  html += done.length
+    ? '<button class="done-tog" onclick="B.toggleDN()">'+(showDN?'▾':'▸')+' concluídas ('+done.length+')</button>'
+      +(showDN?'<div class="task-list" style="margin-top:8px">'+done.map(t=>buildTask(t)).join('')+'</div>':'')
+    : '';
+
+  // Barra de ação de fundo
+  html += '<div class="add-bar" style="margin-top:16px">'
+    +buildDriveChip('q')
+    +'<button class="btn-sm" style="font-size:11px;color:var(--tx3)" onclick="B.archiveFixed(\'q\')">📦 arquivar</button>'
+    +'</div>';
+
+  return html;
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
    BLOCO 12 — CONSTRUTORES DE COMPONENTES (interno)
 ═══════════════════════════════════════════════════════════════════════ */
 
-function buildOverview(nat, allMs){
-  const allActive = [...nat, ...(S.customTasks||[]).map(t=>({...t,done:t.done}))];
+// ── buildPrioridades: nova home — painel de decisão semanal ──────────────────
+function buildPrioridades(nat, bN, allMs, nm, prios){
+  if(!prios) prios = calcPrioridades(nat);
+  if(!nm) nm = getNearestMilestone('q');
 
-  // ── Parsear data de início real de uma tarefa ─────────────────────────
-  // Extrai a primeira data dd/mm de strings como "29/04", "29/04–15/05" etc.
-  function parseStartDate(dateStr){
-    if(!dateStr) return null;
-    const m = dateStr.match(/(\d{1,2})\/(\d{1,2})/);
-    if(!m) return null;
-    return new Date(2026, parseInt(m[2])-1, parseInt(m[1]));
-  }
+  const diasSemana=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+  const meses=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  const hoje=new Date(TODAY);
+  const dataStr=diasSemana[hoje.getDay()]+', '+hoje.getDate()+' de '+meses[hoje.getMonth()];
 
-  // Datas de referência
-  const hoje = new Date(TODAY);
-  hoje.setHours(0,0,0,0);
-  const fimSemana = new Date(hoje.getTime() + 7*86400000);
-  const fimProxSemana = new Date(hoje.getTime() + 14*86400000);
-
-  // ── Classificar tarefas ───────────────────────────────────────────────
-  const criticas = allActive.filter(t=>{
-    if(t.done) return false;
-    const st = (S.taskStatus||{})[t.id]||'and';
-    return st==='atr'||st==='pri';
-  });
-
-  const estaSemana = allActive.filter(t=>{
-    if(t.done) return false;
-    const st = (S.taskStatus||{})[t.id]||'and';
-    if(st==='atr'||st==='pri') return false; // já está em críticas
-    const d = parseStartDate(t.date);
-    if(!d) return false;
-    return d>=hoje && d<=fimSemana;
-  });
-
-  const emAndamento = allActive.filter(t=>{
-    if(t.done) return false;
-    const st = (S.taskStatus||{})[t.id]||'and';
-    if(st==='atr'||st==='pri') return false;
-    const d = parseStartDate(t.date);
-    // Tarefas que já começaram (início no passado) mas não concluídas
-    if(d && d<hoje) return true;
-    return false;
-  });
-
-  // Card "em foco" = críticas + esta semana + em andamento (sem duplicar)
-  const emFocoIds = new Set([...criticas,...estaSemana,...emAndamento].map(t=>t.id));
-  const emFoco = [...emFocoIds].map(id=>allActive.find(t=>t.id===id)).filter(Boolean);
-
-  // Próximas = começam nos próximos 14 dias
-  const proximas = allActive.filter(t=>{
-    if(t.done) return false;
-    if(emFocoIds.has(t.id)) return false;
-    const d = parseStartDate(t.date);
-    if(!d) return false;
-    return d>fimSemana && d<=fimProxSemana;
-  });
-
-  // Alertas dinâmicos
-  const urgentQ = nat.filter(t=>!t.done&&['atr','pri'].includes((S.taskStatus||{})[t.id]||''));
-  const dynAlerts = urgentQ.length
-    ? '<div class="alert red"><strong>📝 Quitanda Escolas — atenção: '+urgentQ.slice(0,3).map(t=>esc(t.title)).join(', ')+(urgentQ.length>3?' +'+(urgentQ.length-3):'')+'</strong></div>'
-    : '';
-
-  function taskRow(t){
-    const proj = t.p||t.proj;
-    const cp = (S.customProjects||[]).find(p=>p.id===proj);
-    const projLabel = proj==='q'?'Quitanda':(cp?cp.name:proj);
-    const stKey = (S.taskStatus||{})[t.id]||'and';
-    const stObj = SM[stKey]||SM.and;
-    const stBg = {'atr':'var(--urgl)','pri':'#FAECE7','agu':'var(--pl)','ibs':'var(--bluel)'}[stKey]||'var(--nl)';
-    const stCol = {'atr':'var(--urg)','pri':'#993C1D','agu':'var(--p)','ibs':'var(--blue)'}[stKey]||'var(--n)';
-    const cmtCount = ((S.taskComments||{})[t.id]||[]).length;
-    // Data de exibição mais limpa
-    const dateDisp = t.date&&t.date!=='a definir'?' · '+t.date.split('–')[0]:'';
-    return '<div class="focus-task" onclick="B.sv(\''+proj+'\')" title="Ir para '+esc(projLabel)+'">'
-      +'<div class="focus-cb"></div>'
-      +'<div style="flex:1;min-width:0">'
-        +'<div class="ftitle">'+esc(t.title)+'</div>'
-        +'<div class="fproj" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">'
-          +esc(projLabel)+esc(dateDisp)
-          +' <span style="font-size:10px;padding:1px 5px;border-radius:8px;background:'+stBg+';color:'+stCol+'">'+esc(stObj.label||'')+'</span>'
-          +(cmtCount?' <span style="font-size:10px;color:var(--n)">💬 '+cmtCount+'</span>':'')
-        +'</div>'
-      +'</div></div>';
-  }
-
-  // Contagem por status para o card esquerdo
-  const cntAtr = criticas.filter(t=>(S.taskStatus||{})[t.id]==='atr').length;
-  const cntPri = criticas.filter(t=>(S.taskStatus||{})[t.id]==='pri').length;
-  const cntLabel = cntAtr>0
-    ? '<span class="focus-count">'+cntAtr+' atrasada'+(cntAtr>1?'s':'')+'</span>'
-    : cntPri>0
-      ? '<span class="focus-count" style="color:var(--p)">'+cntPri+' prioritária'+(cntPri>1?'s':'')+'</span>'
-      : '';
-
-  return dynAlerts
-    +'<div class="focus-grid">'
-      +'<div class="focus-card">'
-        +'<div class="focus-card-title">🔥 Em foco agora '+cntLabel+'</div>'
-        +(emFoco.length
-          ? emFoco.slice(0,7).map(t=>taskRow(t)).join('')
-          : '<p class="empty" style="padding:8px 0">Nenhuma tarefa em andamento 🎉</p>')
-      +'</div>'
-      +'<div class="focus-card">'
-        +'<div class="focus-card-title">📅 Próximas 2 semanas</div>'
-        +(proximas.length
-          ? proximas.slice(0,6).map(t=>taskRow(t)).join('')
-          : '<p class="empty" style="padding:8px 0">Calendário limpo por aqui!</p>')
+  // ── Cabeçalho ─────────────────────────────────────────────────────────
+  const header='<div class="prio-header">'
+    +'<div>'
+      +'<div class="prio-semana"><strong>Esta semana</strong></div>'
+      +'<div style="font-size:13px;color:var(--tx3);margin-top:2px">'+dataStr
+        +(bN.faseAtiva?' · <span style="color:'+bN.faseAtiva.cor+';font-weight:500">'+bN.faseAtiva.label+'</span>':'')
       +'</div>'
     +'</div>'
-    +'<div class="add-bar"><button class="add-btn add-btn-q" onclick="B.openAddTask(\'q\')">+ tarefa</button></div>';
+    +'</div>';
+
+  // ── Milestone próximo ─────────────────────────────────────────────────
+  const msCard = nm
+    ? '<div class="home-ms" style="margin-bottom:16px">'
+        +'<div style="text-align:center;min-width:44px">'
+          +'<div class="home-ms-dias" style="color:'+(nm.days<=3?'var(--urg)':nm.days<=7?'#D85A30':'var(--n)')+'">'+nm.days+'</div>'
+          +'<div style="font-size:10px;color:var(--tx3)">dias</div>'
+        +'</div>'
+        +'<div class="home-ms-info">'
+          +'<div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--tx3);margin-bottom:2px">próximo milestone</div>'
+          +'<div class="home-ms-label">'+esc(nm.label)+'</div>'
+          +'<div class="home-ms-data">'+nm.date.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'})+'</div>'
+        +'</div>'
+        +(nm.days<=3?'<span style="font-size:11px;background:var(--urgl);color:var(--urg);padding:3px 8px;border-radius:8px;font-weight:500;flex-shrink:0">urgente</span>':'')
+        +'<button onclick="B.openEditMilestone(\'q\',\''+nm.id+'\')" title="Editar" style="background:none;border:0.5px solid var(--bd);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:12px;color:var(--tx3);flex-shrink:0">✎</button>'
+      +'</div>'
+    : '<div style="padding:12px;background:var(--surf);border:0.5px dashed var(--bds);border-radius:var(--rads);font-size:13px;color:var(--tx3);margin-bottom:16px">Nenhum milestone cadastrado — <button class="btn-sm" onclick="B.openAddMilestone(\'q\')">adicionar</button></div>';
+
+  // ── Card de tarefa ────────────────────────────────────────────────────
+  // SEM onclick no card — só checkbox faz toggle, duplo clique no título edita
+  function prioCard(t, grupo){
+    const fase=getFase(getTarefaFase(t));
+    const stKey=(S.taskStatus||{})[t.id]||'and';
+    const stObj=SM[stKey]||SM.and;
+    const title=getTarefaTitle(t);
+    const date=getTarefaDate(t);
+    const dias=t._s?t._s.diasAteDeadline:999;
+    const dateColor=dias<0?'var(--urg)':dias<=3?'#D85A30':'var(--tx3)';
+    const dateLabel=dias<0?'⚠ '+Math.abs(dias)+'d atrás':date&&date!=='a definir'?date.replace('–','→'):'';
+    const done=t.done||false;
+    const cmtCount=((S.taskComments||{})[t.id]||[]).length;
+    const tid=t.id; // capturado antes do retorno
+
+    // Monta o HTML do card em partes para clareza
+    const editBtn='<button class="prio-card-edit" onclick="B.editTaskInline(\''+tid+'\')" title="Editar">✎</button>';
+
+    const checkbox='<div class="prio-cb-wrap">'
+      +'<div class="cb '+(done?'on-q':'')+'" id="cb-'+tid+'"'
+        +' onclick="B.toggleTask(\''+tid+'\',\'q\')"'
+        +' role="checkbox" aria-checked="'+done+'" tabindex="0"'
+        +' onkeydown="if(event.key===\' \'||event.key===\'Enter\'){B.toggleTask(\''+tid+'\',\'q\');event.preventDefault();}">'
+        +'<svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+      +'</div>'
+      +'</div>';
+
+    const statusSel='<select class="prio-status-sel '+stObj.cls+'" onclick="event.stopPropagation()" onchange="B.setStatus(\''+tid+'\',this)">'
+      +SM_ORDER.map(k=>'<option value="'+k+'"'+(k===stKey?' selected':'')+'>'+SM[k].label+'</option>').join('')
+      +'</select>';
+
+    const cmtBtn='<button onclick="B.toggleCmt(\''+tid+'\')" style="background:none;border:none;cursor:pointer;font-size:11px;color:'+(cmtCount?'var(--n)':'var(--tx3)')+';padding:0;margin-left:2px" title="Comentários">💬'+(cmtCount?' '+cmtCount:'')+'</button>';
+
+    const body='<div class="prio-body" style="padding-right:28px">'
+      +'<div class="prio-title '+(done?'done-title':'')+'">'+esc(title)+'</div>'
+      +'<div class="prio-meta">'
+        +(fase?'<span class="prio-fase" style="background:'+fase.cor+'22;color:'+fase.cor+'">'+fase.id+'</span>':'')
+        +(t.who?'<span class="prio-who">'+esc(t.who)+'</span>':'')
+        +(dateLabel?'<span class="prio-date" style="color:'+dateColor+'">'+esc(dateLabel)+'</span>':'')
+        +statusSel
+        +cmtBtn
+      +'</div>'
+      // Painel de comentários começa VAZIO — populado só ao abrir
+      // Evita IDs duplicados com a view Tarefas que fica no DOM ao mesmo tempo
+      +'<div id="cmt-'+tid+'" hidden></div>'
+      +'</div>';
+
+    return '<div class="prio-card '+grupo+(done?' done':'')+'" id="pc-'+tid+'">'
+      +editBtn
+      +checkbox
+      +body
+      +'</div>';
+  }
+
+  // ── Grupos de prioridade ──────────────────────────────────────────────
+  const GRUPOS = [
+    {id:'agora',  label:'Agora',       dot:'var(--urg)', cls:'urgente', tasks:prios.agora },
+    {id:'semana', label:'Esta semana', dot:'#D85A30',    cls:'semana',  tasks:prios.semana},
+    {id:'radar',  label:'No radar',    dot:'var(--p)',   cls:'radar',   tasks:prios.radar },
+  ];
+
+  let gruposHtml='';
+  for(const g of GRUPOS){
+    if(!g.tasks.length) continue;
+    const isOpen=prioGroupOpen['prio_open_'+g.id]!==false;
+    gruposHtml+='<div class="prio-grupo">'
+      +'<div class="prio-grupo-header" onclick="B.togglePrioGroup(\''+g.id+'\')">'
+        +'<div class="prio-grupo-dot" style="background:'+g.dot+'"></div>'
+        +'<div class="prio-grupo-label" style="color:'+g.dot+'">'+g.label+'</div>'
+        +'<div class="prio-grupo-count">'+g.tasks.length+'</div>'
+        +'<div class="prio-grupo-caret">'+(isOpen?'▾':'▸')+'</div>'
+      +'</div>'
+      +(isOpen?g.tasks.map(t=>prioCard(t,g.cls)).join(''):'')
+      +'</div>';
+  }
+
+  if(!gruposHtml) gruposHtml='<div style="padding:24px;text-align:center;color:var(--tx3);font-size:13px">🎉 Nenhuma tarefa urgente — projeto em dia!</div>';
+
+  const depoisHtml=prios.depois.length
+    ?'<button class="done-tog" style="margin-top:4px" onclick="B.togglePrioGroup(\'depois\')">'
+      +(prioGroupOpen['prio_open_depois']?'▾':'▸')+' mais tarde ('+prios.depois.length+')'
+      +'</button>'
+      +(prioGroupOpen['prio_open_depois']?'<div style="margin-top:8px">'+prios.depois.map(t=>prioCard(t,'radar')).join('')+'</div>':'')
+    :'';
+
+  // ── Coluna esquerda: lista de tarefas ─────────────────────────────────
+  const colLeft='<div style="flex:1;min-width:0">'+msCard+gruposHtml+depoisHtml+'</div>';
+
+  // ── Coluna direita: post-its de observações ───────────────────────────
+  // Usa o mesmo array S.postits filtrado para proj='home_obs'
+  // ou um array dedicado S.homeObs (mais limpo)
+  const obsNotes = Array.isArray(S.homeObs) ? S.homeObs : [];
+  const OBS_COLORS = [
+    {bg:'#FFF9C4',name:'amarelo'},{bg:'#FCE4EC',name:'rosa'},
+    {bg:'#E8F5E9',name:'verde'},{bg:'#E3F2FD',name:'azul'},
+    {bg:'#FFF3E0',name:'laranja'},{bg:'#F3E5F5',name:'lilás'},
+  ];
+
+  const obsCards = obsNotes.length
+    ? obsNotes.map((n,i)=>{
+        const rot=['-1.5deg','1deg','-0.8deg','1.8deg','-1.2deg','0.7deg'][i%6];
+        return '<div style="background:'+n.color+';border-radius:4px;padding:14px 12px;box-shadow:2px 3px 8px rgba(0,0,0,.1);transform:rotate('+rot+');cursor:pointer;position:relative;min-height:90px" onclick="B.editObsNote('+i+')">'
+          +'<div style="font-size:13px;color:rgba(0,0,0,.75);line-height:1.5;white-space:pre-wrap">'+esc(n.texto)+'</div>'
+          +(n.autor?'<div style="font-size:10px;color:rgba(0,0,0,.4);margin-top:8px;font-weight:600;text-transform:uppercase;letter-spacing:.05em">'+esc(n.autor)+'</div>':'')
+          +'<button onclick="event.stopPropagation();B.delObsNote('+i+')" style="position:absolute;top:6px;right:6px;background:none;border:none;cursor:pointer;font-size:12px;color:rgba(0,0,0,.3);line-height:1">✕</button>'
+          +'</div>';
+      }).join('')
+    : '<div style="font-size:12px;color:var(--tx3);text-align:center;padding:12px 0">Nenhuma nota ainda</div>';
+
+  const colRight='<div style="width:220px;flex-shrink:0">'
+    +'<div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--tx3);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between">'
+      +'Observações'
+      +'<button class="btn-sm" style="font-size:11px" onclick="B.addObsNote()">+ nota</button>'
+    +'</div>'
+    +'<div style="display:flex;flex-direction:column;gap:12px">'+obsCards+'</div>'
+    +'</div>';
+
+  // ── Layout em 2 colunas ───────────────────────────────────────────────
+  return header+'<div style="display:flex;gap:24px;align-items:flex-start">'+colLeft+colRight+'</div>';
 }
 
 function buildTC(proj, label, days, milestone, b, phases, color){
@@ -1852,72 +2377,155 @@ function buildMsList(proj, color){
 }
 
 function buildTask(task){
-  const proj = task.p;
-  const done = task.done;
-  const cbCls = done?'on-q':'';
-  const cp = (S.customProjects||[]).find(p=>p.id===proj);
-  const pillCls = proj==='q'?'pill-q':'';
-  const pillSt = cp?'background:'+cp.color+'22;color:'+cp.color+';':'';
-  const projLabel = proj==='q'?'Quitanda':(cp?cp.name:proj);
-  let badge = '';
-  if(task.milestone&&!done) badge='<span class="pill pill-red">milestone</span>';
-  else if(task.pri===0&&!done) badge='<span class="pill pill-red">crítico</span>';
-  else if(task.pri===1&&!done) badge='<span class="pill pill-amber">urgente</span>';
-  const delBtn = task.custom?'<button class="tdel" onclick="B.delTask(\''+task.id+'\');event.stopPropagation()" aria-label="Remover">✕</button>':'';
-  const stKey = (S.taskStatus||{})[task.id]||'and';
-  const stObj = SM[stKey]||SM.and;
-  const statusSel = '<select class="tstatus '+stObj.cls+'" onclick="event.stopPropagation()" onchange="B.setStatus(\''+task.id+'\',this)">'
-    +SM_ORDER.map(k=>'<option value="'+k+'"'+(k===stKey?' selected':'')+'>'+SM[k].label+'</option>').join('')
-    +'</select>';
-  const cmts = (S.taskComments||{})[task.id]||[];
-  const isExp = !!EC[task.id];
-  const cntTxt = cmts.length?cmts.length+' comentário'+(cmts.length>1?'s':''):'comentários';
-  const expCls = cmts.length&&!isExp?'exp-btn has-c':'exp-btn';
-  const secMeta = (task.who||task.addedBy)?'<div class="tsec">'+(task.who?esc(task.who):'')+(task.addedBy?' · por '+esc(task.addedBy):'')+'</div>':'';
+  const proj  = task.p;
+  const tid   = task.id;
+  const done  = task.done;
+  const title = getTarefaTitle(task);
+  const date  = getTarefaDate(task);
+
+  // Cor / label do projeto
+  const cp       = (S.customProjects||[]).find(p=>p.id===proj);
+  const projLabel= proj==='q'?'Quitanda':(cp?cp.name:proj);
+  const pillCls  = proj==='q'?'pill-q':'';
+  const pillSt   = cp?'background:'+cp.color+'22;color:'+cp.color+';':'';
+
+  // Status
+  const stKey  = (S.taskStatus||{})[tid]||'and';
+  const stObj  = SM[stKey]||SM.and;
   const accentCls = done?'':({'atr':'st-atr','pri':'st-pri','agu':'st-agu','ibs':'st-ibs','pau':'st-pau'}[stKey]||'');
 
-  return '<div class="ti '+(done?'done ':'')+accentCls+'" id="ti-'+task.id+'"'
-    +' draggable="true" ondragstart="B.ds(event,\''+task.id+'\')" ondragover="B.dov(event)" ondragleave="B.dl(event)" ondrop="B.dd(event,\''+task.id+'\',\''+proj+'\')" ondragend="B.de(event)">'
-    +'<div class="tmain" onclick="B.toggleTask(\''+task.id+'\',\''+proj+'\')">'
-      +'<div class="dh" onclick="event.stopPropagation()" aria-hidden="true">⠿</div>'
-      +'<div class="cb '+cbCls+'" id="cb-'+task.id
-        +'" onclick="B.toggleTask(\''+task.id+'\',\''+proj+'\');event.stopPropagation()"'
-        +' role="checkbox" aria-checked="'+done+'" tabindex="0"'
-        +' onkeydown="if(event.key===\' \'||event.key===\'Enter\'){B.toggleTask(\''+task.id+'\',\''+proj+'\');event.preventDefault();}">'
-        +'<svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
-      +'</div>'
-      +'<div class="tbody">'
-        +'<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:6px;">'
-          +'<div class="ttitle">'+esc(task.title)+'</div>'+delBtn
-        +'</div>'
-        +'<div class="tmeta"><span class="pill '+pillCls+'" style="'+pillSt+'">'+projLabel+'</span>'+badge+'<span class="tdate">'+esc(task.date)+'</span></div>'
-        +secMeta
-        +'<div onclick="event.stopPropagation()">'+statusSel+'</div>'
-      +'</div>'
+  // Comentários
+  const cmts   = (S.taskComments||{})[tid]||[];
+  const isExp  = !!EC[tid];
+  const cntTxt = cmts.length ? cmts.length+' comentário'+(cmts.length>1?'s':'') : 'comentários';
+  const expCls = cmts.length&&!isExp ? 'exp-btn has-c' : 'exp-btn';
+
+  // Fase
+  const fase = getFase(getTarefaFase(task));
+
+  // ── Peças do card ─────────────────────────────────────────────────────
+
+  // Botão ✎ — aparece no hover (position:absolute, mesmo padrão do prioCard)
+  const editBtn = '<button class="prio-card-edit" onclick="B.editTaskInline(\''+tid+'\')" title="Editar tarefa">✎</button>';
+
+  // Handle de drag & drop
+  const dragHandle = '<div class="dh" draggable="false" aria-hidden="true"'
+    +' onmousedown="event.stopPropagation()">⠿</div>';
+
+  // Checkbox — ÚNICO elemento que marca como concluída
+  const checkbox = '<div class="cb '+(done?'on-q':'')+'" id="cb-'+tid+'"'
+    +' onclick="B.toggleTask(\''+tid+'\',\''+proj+'\')"'
+    +' role="checkbox" aria-checked="'+done+'" tabindex="0"'
+    +' onkeydown="if(event.key===\' \'||event.key===\'Enter\'){B.toggleTask(\''+tid+'\',\''+proj+'\');event.preventDefault();}">'
+    +'<svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    +'</div>';
+
+  // Status select
+  const statusSel = '<select class="tstatus '+stObj.cls+'" onclick="event.stopPropagation()" onchange="B.setStatus(\''+tid+'\',this)">'
+    +SM_ORDER.map(k=>'<option value="'+k+'"'+(k===stKey?' selected':'')+'>'+SM[k].label+'</option>').join('')
+    +'</select>';
+
+  // Corpo da tarefa — SEM onclick global
+  const body = '<div class="tbody" style="padding-right:28px">'
+    +'<div class="ttitle'+(done?' done-title':'')+'">'+esc(title)+'</div>'
+    +'<div class="tmeta">'
+      +'<span class="pill '+pillCls+'" style="'+pillSt+'">'+projLabel+'</span>'
+      +(fase?'<span class="pill" style="background:'+fase.cor+'22;color:'+fase.cor+';font-size:10px">'+fase.id+'</span>':'')
+      +(date&&date!=='a definir'?'<span class="tdate">'+esc(date)+'</span>':'')
     +'</div>'
-    +'<button class="'+expCls+'" id="expbtn-'+task.id+'" onclick="B.toggleCmt(\''+task.id+'\');event.stopPropagation()">'+(isExp?'▴ fechar':'▾ '+cntTxt)+'</button>'
-    +'<div id="cmt-'+task.id+'"'+(isExp?'':' hidden')+'>'+buildCmts(task.id)+'</div>'
+    +(task.who||task.addedBy?'<div class="tsec">'+getTarefaWho(task)+(task.addedBy?' · por '+esc(task.addedBy):'')+'</div>':'')
+    +'<div onclick="event.stopPropagation()">'+statusSel+'</div>'
+    +'</div>';
+
+  // Botão de toggle comentários
+  const cmtToggle = '<button class="'+expCls+'" id="expbtn-'+tid+'"'
+    +' onclick="B.toggleCmt(\''+tid+'\');event.stopPropagation()">'
+    +(isExp?'▴ fechar':'▾ '+cntTxt)
+    +'</button>';
+
+  // Seção de comentários — começa VAZIA (sem buildCmts)
+  // Popula apenas quando toggleCmt abre, evitando IDs duplicados no DOM
+  // (a view home e a view tarefas ficam no DOM ao mesmo tempo)
+  const cmtSection = '<div id="cmt-'+tid+'"'+(isExp?' style="display:block"':' hidden')+'>'+
+    (isExp ? buildCmts(tid) : '')
+    +'</div>';
+
+  // ── Montar o card ─────────────────────────────────────────────────────
+  // Drag & drop no container externo, mas SEM onclick — cada elemento controla sua ação
+  return '<div class="ti '+(done?'done ':'')+accentCls+'" id="ti-'+tid+'" style="position:relative"'
+    +' draggable="true"'
+    +' ondragstart="B.ds(event,\''+tid+'\')"'
+    +' ondragover="B.dov(event)"'
+    +' ondragleave="B.dl(event)"'
+    +' ondrop="B.dd(event,\''+tid+'\',\''+proj+'\')"'
+    +' ondragend="B.de(event)">'
+    // Botão editar absoluto (aparece no hover via CSS)
+    +editBtn
+    // Linha principal: handle + checkbox + corpo
+    +'<div class="tmain" style="cursor:default">'
+      +dragHandle
+      +checkbox
+      +body
+    +'</div>'
+    // Toggle comentários + seção de comentários
+    +cmtToggle
+    +cmtSection
     +'</div>';
 }
 
 function buildCmts(taskId){
+  // fKey: chave segura para nome de função global (sem caracteres especiais)
+  const fKey = taskId.replace(/[^a-z0-9]/gi,'_');
+
+  // Registra funções no window — funcionam em qualquer onclick,
+  // independente de escaping de aspas ou escopo de módulo ES6
+  window['_ac_'+fKey] = () => B.addCmt(taskId);
+  window['_ec_'+fKey] = (cId) => B.editCmt(taskId, cId);
+  window['_dc_'+fKey] = (cId) => B.delCmt(taskId, cId);
+
   const cmts = (S.taskComments||{})[taskId]||[];
+  const AUTORES = ['Lele','Luana','Pedro'];
+
+  // ── Comentários existentes ────────────────────────────────────────────
   const rows = cmts.length
-    ? cmts.map(c=>'<div class="cmt-item" id="ci-'+c.id+'">'
-        +'<div class="cmt-text" id="ct-'+c.id+'">'+esc(c.text)+'</div>'
-        +'<div class="cmt-meta"><span class="cmt-ts">'+ts(c.ts)+(c.edited?' · editado':'')+'</span>'
-          +'<div class="cmt-acts">'
-            +'<button class="cmt-act" onclick="B.editCmt(\''+taskId+'\',\''+c.id+'\')">editar</button>'
-            +'<button class="cmt-act" onclick="B.delCmt(\''+taskId+'\',\''+c.id+'\')">apagar</button>'
-          +'</div></div></div>').join('')
+    ? cmts.map(c=>{
+        const autor = c.autor||'?';
+        const cor = autor==='Lele'?'#2A6B6B':autor==='Luana'?'#185FA5':'#854F0B';
+        // cId seguro para passar como string literal no onclick
+        const cIdStr = "'"+c.id+"'";
+        return '<div class="cmt-item" id="ci-'+c.id+'">'
+          +'<div class="cmt-header">'
+            +'<div class="cmt-avatar" style="background:'+cor+'22;color:'+cor+'">'+autor[0].toUpperCase()+'</div>'
+            +'<span class="cmt-autor">'+esc(autor)+'</span>'
+            +'<span class="cmt-ts">'+ts(c.ts)+(c.edited?' · editado':'')+'</span>'
+            +'<div class="cmt-acts">'
+              +'<button class="cmt-act" onclick="_ec_'+fKey+'('+cIdStr+')" title="Editar">✎</button>'
+              +'<button class="cmt-act" onclick="_dc_'+fKey+'('+cIdStr+')" title="Apagar">✕</button>'
+            +'</div>'
+          +'</div>'
+          +'<div class="cmt-text" id="ct-'+c.id+'">'+esc(c.text)+'</div>'
+          +'</div>';
+      }).join('')
     : '<p class="cmt-empty">Nenhum comentário ainda.</p>';
-  return '<div class="cmt-wrap">'+rows
-    +'<div class="add-cmt">'
-      +'<textarea class="add-cmt-inp" id="nc-'+taskId+'" rows="1"'
-        +' placeholder="Escreva um comentário... (Enter para salvar, Shift+Enter nova linha)" oninput="ar(this)"'
-        +' onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();B.addCmt(\''+taskId+'\');}"></textarea>'
-      +'<button class="add-cmt-btn" onclick="B.addCmt(\''+taskId+'\')">Salvar</button>'
-    +'</div></div>';
+
+  // ── Campo de novo comentário ──────────────────────────────────────────
+  const autorOpts = AUTORES.map(a=>'<option>'+a+'</option>').join('');
+
+  return '<div class="cmt-wrap">'
+    +rows
+    +'<div class="cmt-new">'
+      +'<textarea class="cmt-new-inp" id="nc-'+fKey+'" rows="2"'
+        +' placeholder="Escreva um comentário..."'
+        +' oninput="ar(this)"'
+        +' onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();_ac_'+fKey+'()}"></textarea>'
+      +'<div class="cmt-new-footer">'
+        +'<div class="cmt-new-autor"><span>como</span>'
+          +'<select id="nc-autor-'+fKey+'">'+autorOpts+'</select>'
+        +'</div>'
+        +'<button class="cmt-send" onclick="_ac_'+fKey+'()">↵ Enviar</button>'
+      +'</div>'
+    +'</div>'
+    +'</div>';
 }
 
 function buildCustomView(p, allMs){
@@ -2069,93 +2677,207 @@ function getSheetsEtapas(){
 }
 
 function buildTimeline(allMs){
-  const PROJ=[{id:'q',label:'Quitanda Escolas',color:'#2A6B6B'}];
-  (S.customProjects||[]).forEach(p=>PROJ.push({id:p.id,label:p.name,color:p.color||'#888'}));
-  const ids=new Set(PROJ.map(p=>p.id));
-  const items=getTimelineItems().filter(e=>e.projectId&&ids.has(e.projectId));
+  // ── Fonte de dados ────────────────────────────────────────────────────
+  const fonteBadge = sheetsData===null
+    ? '<span style="font-size:11px;color:var(--p);background:var(--pl);padding:2px 8px;border-radius:8px">⏳ carregando cronograma...</span>'
+    : sheetsData.length>0
+      ? '<span style="font-size:11px;color:var(--n);background:var(--nl);padding:2px 8px;border-radius:8px">📊 Google Sheets</span>'
+      : '<span style="font-size:11px;color:var(--tx3);background:var(--bd);padding:2px 8px;border-radius:8px;cursor:pointer" onclick="loadSheetsData().then(d=>{if(d.length)render()})">📋 dados locais — tentar novamente</span>';
 
-  // Badge de fonte dos dados
-  const fonteBadge=sheetsData===null
-    ?'<span style="font-size:11px;color:var(--p);background:var(--pl);padding:2px 8px;border-radius:8px">⏳ carregando cronograma...</span>'
-    :sheetsData.length>0
-      ?'<span style="font-size:11px;color:var(--n);background:var(--nl);padding:2px 8px;border-radius:8px">📊 lendo do Google Sheets</span>'
-      :'<span style="font-size:11px;color:var(--tx3);background:var(--bd);padding:2px 8px;border-radius:8px;cursor:pointer" onclick="loadSheetsData().then(d=>{if(d.length)render()})">📋 dados locais — clique para tentar novamente</span>';
+  // ── Construir itens do Gantt por fase ─────────────────────────────────
+  // Cada linha = uma fase. Barra = período das tarefas da fase.
+  // Diamantes = milestones do Firebase para aquela fase.
+  // Linha vertical = hoje.
 
-  if(!items.length) return '<div style="margin-bottom:12px">'+fonteBadge+'</div><p class="tl-empty">Nenhum item com data encontrado.</p>';
+  // Calcular janela de tempo total
+  const msFirebase = (S.projectMilestones||{})['q']||[];
 
-  const allD=items.reduce((a,e)=>{a.push(e.startDate,e.endDate);return a;},[TODAY]);
-  const lo=new Date(Math.min(...allD)),hi=new Date(Math.max(...allD));
-  const minD=new Date(lo.getFullYear(),lo.getMonth(),1);
-  const maxD=new Date(hi.getFullYear(),hi.getMonth()+2,0);
-  const span=Math.max(1,Math.round((maxD-minD)/864e5));
-  function pct(d){return Math.max(0,Math.min(100,Math.round((d-minD)/864e5)/span*100));}
-  function pw(s,e){return Math.max(.3,Math.max(1,Math.round((e-s)/864e5)+1)/span*100);}
-
-  const months=[];
-  let mcur=new Date(minD);
-  while(mcur<=maxD){
-    const next=new Date(mcur.getFullYear(),mcur.getMonth()+1,1);
-    const mPct=pct(mcur),mEnd=Math.min(100,pct(next));
-    months.push({label:mcur.toLocaleDateString('pt-BR',{month:'short',year:'2-digit'}),left:mPct,width:mEnd-mPct});
-    mcur=next;
-  }
-
-  const LANE_H=72;
-  const headerMos=months.map(m=>'<div class="tl-mo" style="width:'+m.width+'%;min-width:0">'+m.label+'</div>').join('');
-  const vlines=months.map(m=>'<div class="tl-vline" style="left:'+m.left+'%"></div>').join('');
-  const todayLine='<div class="tl-today" style="left:'+pct(TODAY)+'%"><div class="tl-today-lbl">hoje</div></div>';
-
-  const msItems=items.filter(e=>e.type==='milestone');
-
-  let rows='';
-  const COR='#2A6B6B';
-  const FASES_ORDEM=['E1','E2','E3','E4','E5','MA'];
-  const FASES_LABELS={E1:'E1 Diagnóstico',E2:'E2 Escuta',E3:'E3 Análise',E4:'E4 Workshop',E5:'E5 Consolidação',MA:'MA Alunos'};
-
-  if(sheetsData&&sheetsData.length>0){
-    for(const faseId of FASES_ORDEM){
-      const faseItems=items.filter(e=>e.fase===faseId&&e.type==='task');
-      if(!faseItems.length) continue;
-      const minS=Math.min(...faseItems.map(t=>+t.startDate));
-      const maxE=Math.max(...faseItems.map(t=>+t.endDate));
-      const isCur=minS<=TODAY&&maxE>=TODAY;
-      const isPast=maxE<TODAY;
-      let laneInner=vlines+todayLine;
-      laneInner+='<div class="tl-bar" style="left:'+pct(minS)+'%;width:'+pw(minS,maxE)+'%;background:'+COR+';opacity:'+(isPast?'.25':isCur?'.65':'.4')+'"></div>';
-      let aboveNext=true;
-      msItems.forEach(m=>{
-        const l=pct(m.startDate);
-        const bg=m.startDate<TODAY?'var(--tx3)':COR;
-        laneInner+='<div class="tl-ms" style="left:'+l+'%">'
-          +'<div class="tl-ms-diamond" style="background:'+bg+'"></div>'
-          +'<div class="tl-ms-lbl '+(aboveNext?'above':'below')+'" style="color:'+bg+';background:var(--bg)">'+esc(m.title)+'</div>'
-          +'</div>';
-        aboveNext=!aboveNext;
-      });
-      const lblColor=isCur?COR:isPast?'var(--tx3)':'var(--tx2)';
-      rows+='<div class="tl-proj" style="height:'+LANE_H+'px">'
-        +'<div class="tl-proj-label"><div class="tl-proj-dot" style="background:'+(isPast?'var(--bds)':isCur?COR:'var(--bd)')+';'+(isCur?'box-shadow:0 0 0 3px '+COR+'33;':'')+'"></div>'
-        +'<div class="tl-proj-name" style="color:'+lblColor+'">'+esc(FASES_LABELS[faseId]||faseId)+'</div></div>'
-        +'<div style="flex:1;position:relative;height:'+LANE_H+'px;background:var(--bg)">'+laneInner+'</div></div>';
+  // Coletar todas as datas para definir o span
+  const allDates = [new Date('2026-04-22')]; // início do projeto
+  for(const d of TDEFS){
+    const m = d.date.match(/(\d{1,2})\/(\d{1,2})/);
+    if(m) allDates.push(new Date(2026,parseInt(m[2])-1,parseInt(m[1])));
+    const parts = d.date.split('–');
+    if(parts.length>1){
+      const m2 = parts[1].trim().match(/(\d{1,2})\/(\d{1,2})/);
+      if(m2) allDates.push(new Date(2026,parseInt(m2[2])-1,parseInt(m2[1])));
     }
-  } else {
-    rows=PROJ.map(proj=>{
-      const projItems=items.filter(e=>e.projectId===proj.id);
-      let laneInner=vlines+todayLine;
-      const ti=projItems.filter(e=>e.type!=='milestone');
-      if(ti.length){ const s2=Math.min(...ti.map(t=>+t.startDate)),e2=Math.max(...ti.map(t=>+t.endDate)); laneInner+='<div class="tl-bar" style="left:'+pct(s2)+'%;width:'+pw(s2,e2)+'%;background:'+proj.color+'"></div>'; }
-      let an=true;
-      projItems.filter(e=>e.type==='milestone').forEach(m=>{const l=pct(m.startDate);const bg=m.startDate<TODAY?'var(--tx3)':proj.color;laneInner+='<div class="tl-ms" style="left:'+l+'%"><div class="tl-ms-diamond" style="background:'+bg+'"></div><div class="tl-ms-lbl '+(an?'above':'below')+'" style="color:'+bg+';background:var(--bg)">'+esc(m.title)+'</div></div>';an=!an;});
-      return '<div class="tl-proj" style="height:'+LANE_H+'px"><div class="tl-proj-label"><div class="tl-proj-dot" style="background:'+proj.color+'"></div><div class="tl-proj-name">'+esc(proj.label)+'</div></div><div style="flex:1;position:relative;height:'+LANE_H+'px;background:var(--bg)">'+laneInner+'</div></div>';
-    }).join('');
+  }
+  for(const m of msFirebase){
+    const d = parseMsDate(m.date);
+    if(d) allDates.push(d);
+  }
+  // Sheets data
+  if(sheetsData&&sheetsData.length){
+    for(const r of sheetsData){ if(r.start) allDates.push(r.start); if(r.end) allDates.push(r.end); }
   }
 
-  const legend='<div class="tl-legend"><div class="tl-li"><div class="tl-li-bar" style="background:var(--n)"></div>período da fase</div><div class="tl-li"><div class="tl-li-ms" style="background:var(--n)"></div>milestone</div><div class="tl-li"><div class="tl-li-today"></div>hoje</div></div>';
+  const minD = new Date(Math.min(...allDates));
+  minD.setDate(1); // início do mês
+  const maxD = new Date(Math.max(...allDates));
+  maxD.setMonth(maxD.getMonth()+1,0); // fim do mês seguinte
 
-  return '<div style="margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">'+legend+fonteBadge+'</div>'
-    +'<div class="tl-root"><div class="tl-chart"><div class="tl-inner">'
-    +'<div class="tl-header"><div class="tl-header-label">'+(sheetsData&&sheetsData.length?'fase':'projeto')+'</div><div class="tl-header-months">'+headerMos+'</div></div>'
-    +rows+'</div></div></div>';
+  const totalSpan = Math.max(1, maxD-minD);
+  function pct(d){ return Math.max(0,Math.min(100,((d-minD)/totalSpan)*100)); }
+  function pw(s,e){ return Math.max(0.5, ((e-s)/totalSpan)*100); }
+
+  // ── Cabeçalho de meses ────────────────────────────────────────────────
+  const months=[];
+  let mc=new Date(minD.getFullYear(),minD.getMonth(),1);
+  while(mc<=maxD){
+    const next=new Date(mc.getFullYear(),mc.getMonth()+1,1);
+    months.push({
+      label:mc.toLocaleDateString('pt-BR',{month:'short',year:'2-digit'}),
+      left:pct(mc),
+      width:pct(next)-pct(mc)
+    });
+    mc=next;
+  }
+  const headerMos=months.map(m=>
+    '<div style="position:absolute;left:'+m.left+'%;width:'+m.width+'%;padding-left:6px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--tx3);border-left:1px solid var(--bd);box-sizing:border-box;overflow:hidden">'+m.label+'</div>'
+  ).join('');
+
+  const LANE_H = 52;
+  const LABEL_W = 120;
+
+  // Linhas verticais dos meses
+  const vlines = months.map(m=>
+    '<div style="position:absolute;left:'+m.left+'%;top:0;bottom:0;width:1px;background:var(--bd);opacity:.5"></div>'
+  ).join('');
+
+  // Linha de hoje
+  const todayPct = pct(TODAY);
+  const todayLine = '<div style="position:absolute;left:'+todayPct+'%;top:0;bottom:0;width:2px;background:var(--urg);z-index:10">'
+    +'<div style="position:absolute;bottom:100%;left:50%;transform:translateX(-50%);font-size:8px;font-weight:700;color:var(--urg);background:var(--bg);padding:1px 4px;border-radius:3px;border:1px solid var(--urg);white-space:nowrap">hoje</div>'
+    +'</div>';
+
+  // ── Linhas por fase ───────────────────────────────────────────────────
+  let rows = '';
+  for(const fase of FASES){
+    // Período da fase: das tarefas do TDEFS ou Sheets
+    let faseStart, faseEnd;
+
+    if(sheetsData&&sheetsData.length){
+      const fi = sheetsData.filter(r=>r.fase===fase.id&&!r.isEtapa);
+      if(fi.length){
+        faseStart = new Date(Math.min(...fi.map(r=>+r.start)));
+        faseEnd   = new Date(Math.max(...fi.map(r=>+r.end)));
+      }
+    }
+
+    if(!faseStart){
+      // Fallback: usar datas de TDEFS
+      const td = TDEFS.filter(t=>TAREFA_FASE[t.id]===fase.id);
+      if(!td.length) continue;
+      const starts=[], ends=[];
+      for(const t of td){
+        const parts = t.date.split('–');
+        const m1 = parts[0].trim().match(/(\d{1,2})\/(\d{1,2})/);
+        if(m1) starts.push(new Date(2026,parseInt(m1[2])-1,parseInt(m1[1])));
+        const m2 = (parts[1]||parts[0]).trim().match(/(\d{1,2})\/(\d{1,2})/);
+        if(m2) ends.push(new Date(2026,parseInt(m2[2])-1,parseInt(m2[1])));
+      }
+      if(!starts.length) continue;
+      faseStart = new Date(Math.min(...starts));
+      faseEnd   = new Date(Math.max(...ends.length?ends:starts));
+    }
+
+    const isCur = faseStart<=TODAY && faseEnd>=TODAY;
+    const isPast = faseEnd<TODAY;
+    const barOpacity = isPast?'.3':isCur?'.85':'.5';
+    const barLeft = pct(faseStart);
+    const barW = pw(faseStart,faseEnd);
+
+    // Milestones desta fase
+    const faseMilestones = msFirebase.filter(m=>m.phaseId===fase.id);
+
+    // Lane interna
+    let laneInner = vlines + todayLine;
+
+    // Barra da fase
+    laneInner += '<div style="position:absolute;top:50%;transform:translateY(-50%);left:'+barLeft+'%;width:'+barW+'%;height:12px;border-radius:6px;background:'+fase.cor+';opacity:'+barOpacity+'"></div>';
+
+    // Milestones como diamantes
+    let alternateAbove = true;
+    for(const ms of faseMilestones){
+      const d = parseMsDate(ms.date);
+      if(!d) continue;
+      const l = pct(d);
+      const isPastMs = d < TODAY;
+      const msCor = isPastMs ? 'var(--tx3)' : fase.cor;
+      const lbl = ms.label.length>18 ? ms.label.slice(0,16)+'…' : ms.label;
+      laneInner += '<div style="position:absolute;left:'+l+'%;top:50%;z-index:6">'
+        +'<div style="width:12px;height:12px;background:'+msCor+';transform:translate(-50%,-50%) rotate(45deg);border-radius:2px;box-shadow:0 0 0 2px var(--bg)"></div>'
+        +'<div style="position:absolute;left:50%;transform:translateX(-50%);font-size:9px;font-weight:600;color:'+msCor+';background:var(--bg);padding:1px 5px;border-radius:4px;white-space:nowrap;'+(alternateAbove?'bottom:calc(6px + 8px)':'top:calc(6px + 8px)')+'" title="'+esc(ms.label)+'">'+esc(lbl)+'</div>'
+        +'</div>';
+      alternateAbove = !alternateAbove;
+    }
+
+    // Linha da fase
+    const labelColor = isCur ? fase.cor : isPast ? 'var(--tx3)' : 'var(--tx2)';
+    const dotStyle = isCur
+      ? 'width:10px;height:10px;border-radius:50%;background:'+fase.cor+';box-shadow:0 0 0 3px '+fase.cor+'33;flex-shrink:0'
+      : isPast
+        ? 'width:8px;height:8px;border-radius:50%;background:var(--bds);flex-shrink:0'
+        : 'width:8px;height:8px;border-radius:50%;border:1.5px solid var(--bds);flex-shrink:0;box-sizing:border-box';
+
+    rows += '<div style="display:flex;border-bottom:0.5px solid var(--bd);height:'+LANE_H+'px">'
+      +'<div style="width:'+LABEL_W+'px;flex-shrink:0;display:flex;align-items:center;gap:7px;padding:0 12px;border-right:1px solid var(--bd);background:var(--surf)">'
+        +'<div style="'+dotStyle+'"></div>'
+        +'<div style="font-size:11px;font-weight:600;color:'+labelColor+';line-height:1.2">'+esc(fase.labelCurto)+(isCur?'<div style="font-size:9px;opacity:.7">fase atual</div>':'')+'</div>'
+      +'</div>'
+      +'<div style="flex:1;position:relative;height:'+LANE_H+'px;background:var(--bg);overflow:hidden">'+laneInner+'</div>'
+      +'</div>';
+  }
+
+  // ── Montar o Gantt ────────────────────────────────────────────────────
+  const gantt = '<div style="overflow-x:auto;border-radius:var(--rads);border:1px solid var(--bd);margin-top:12px">'
+    // Cabeçalho de meses
+    +'<div style="display:flex;border-bottom:2px solid var(--bd);background:var(--surf)">'
+      +'<div style="width:'+LABEL_W+'px;flex-shrink:0;padding:8px 12px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--tx3);border-right:1px solid var(--bd)">Fase</div>'
+      +'<div style="flex:1;position:relative;height:28px">'
+        +headerMos
+      +'</div>'
+    +'</div>'
+    +rows
+    +'</div>';
+
+  const legend = '<div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center">'
+    +'<div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--tx2)"><div style="width:24px;height:8px;border-radius:4px;background:var(--n)"></div>período da fase</div>'
+    +'<div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--tx2)"><div style="width:10px;height:10px;background:var(--n);transform:rotate(45deg);border-radius:2px;flex-shrink:0"></div>milestone</div>'
+    +'<div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--tx2)"><div style="width:2px;height:14px;background:var(--urg)"></div>hoje</div>'
+    +'</div>';
+
+  return '<div style="margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">'
+    +legend+fonteBadge
+    +'</div>'
+    +gantt
+    +'<div style="margin-top:10px;font-size:11px;color:var(--tx3)">Clique em + milestone para adicionar marcos ao cronograma</div>';
+}
+
+// ── buildLinks: subpágina de links úteis como cards ──────────────────────────
+function buildLinks(){
+  const links = S.clienteLinks||[];
+  if(!links.length){
+    return '<div style="padding:40px;text-align:center">'
+      +'<div style="font-size:32px;margin-bottom:12px">🔗</div>'
+      +'<div style="font-size:14px;color:var(--tx2);margin-bottom:16px">Nenhum link cadastrado ainda.</div>'
+      +'<button class="add-btn add-btn-q" style="padding:8px 20px" onclick="CL.addLink()">+ adicionar primeiro link</button>'
+      +'</div>';
+  }
+
+  const cards = links.map((l,i)=>{
+    const emoji = l.emoji||'🔗';
+    return '<a class="link-card" href="'+esc(l.url||'#')+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">'
+      +'<button class="link-card-edit" onclick="event.preventDefault();event.stopPropagation();CL.editLink('+i+')" title="Editar">✎</button>'
+      +'<div class="link-card-emoji">'+emoji+'</div>'
+      +'<div class="link-card-nome">'+esc(l.nome||'Link')+'</div>'
+      +(l.desc?'<div class="link-card-desc">'+esc(l.desc)+'</div>':'')
+      +'</a>';
+  }).join('');
+
+  return '<div style="margin-bottom:16px;font-size:13px;color:var(--tx3)">Clique num card para abrir o link. Passe o mouse para editar.</div>'
+    +'<div class="link-card-grid">'+cards+'</div>';
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -2165,9 +2887,179 @@ function buildTimeline(allMs){
 const B = window.B = {};
 
 // Navegação
-B.sv = function(v){ V=v; render(); window.scrollTo(0,0); };
+B.sv = function(v){
+  V = (v==='all'||v==='q'||v===''||v==='tarefas-old') ? 'home' : v;
+  render(); window.scrollTo(0,0);
+};
 B.toggleDN = function(){ showDN=!showDN; render(); };
 B.toggleDR = function(id){ id=id||'r'; showDR[id]=!showDR[id]; render(); };
+B.toggleFaseGroup = function(faseId){
+  const key = 'fase_open_'+faseId;
+  faseGroupOpen[key] = faseGroupOpen[key]===false ? true : false;
+  render();
+};
+
+B.togglePrioGroup = function(grupoId){
+  const key = 'prio_open_'+grupoId;
+  prioGroupOpen[key] = prioGroupOpen[key]===false ? true : false;
+  render();
+};
+
+// ── Bloqueios ────────────────────────────────────────────────────────────────
+B.addBloqueio = function(){
+  const autores = ['Lele','Luana','Pedro'];
+  showModal('<div class="modal-ov" onclick="if(event.target===this)B.closeModal()">'
+    +'<div class="modal"><div class="modal-drag"></div>'
+    +'<h3>Registrar bloqueio</h3>'
+    +'<div class="mf"><label class="ml" for="bl-txt">O que está bloqueando?</label>'
+    +'<textarea class="mi" id="bl-txt" rows="3" placeholder="Descreva o bloqueio de forma objetiva..." style="resize:none;line-height:1.6"></textarea></div>'
+    +'<div class="mf"><label class="ml" for="bl-au">Reportado por</label>'
+    +'<select class="msel" id="bl-au">'+autores.map(a=>'<option>'+a+'</option>').join('')+'</select></div>'
+    +'<div class="ma"><button class="mc" onclick="B.closeModal()">Cancelar</button>'
+    +'<button class="mok" style="background:var(--urg)" onclick="B.saveBloqueio()">Registrar</button>'
+    +'</div></div></div>');
+};
+B.saveBloqueio = async function(){
+  const texto=(document.getElementById('bl-txt')||{value:''}).value.trim();
+  if(!texto) return;
+  const autor=(document.getElementById('bl-au')||{value:'Lele'}).value;
+  const data=new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
+  if(!Array.isArray(S.bloqueios)) S.bloqueios=[];
+  S.bloqueios.push({id:uid(),texto,autor,data});
+  B.closeModal(); await save('Bloqueio registrado'); render();
+};
+B.delBloqueio = async function(idx){
+  if(!Array.isArray(S.bloqueios)) return;
+  S.bloqueios.splice(idx,1);
+  await save('Bloqueio removido'); render();
+};
+
+// ── Observações da semana (post-its laterais) ────────────────────────────────
+const OBS_COLORS=[
+  {bg:'#FFF9C4'},{bg:'#FCE4EC'},{bg:'#E8F5E9'},
+  {bg:'#E3F2FD'},{bg:'#FFF3E0'},{bg:'#F3E5F5'},
+];
+B.addObsNote = function(){
+  const colorSwatches=OBS_COLORS.map((c,i)=>
+    '<div style="width:26px;height:26px;border-radius:50%;background:'+c.bg+';cursor:pointer;border:2px solid '+(i===0?'var(--tx)':'transparent')+';transition:border-color .15s" onclick="B._pickObs(\''+c.bg+'\',this)" data-c="'+c.bg+'"></div>'
+  ).join('');
+  showModal('<div class="modal-ov" onclick="if(event.target===this)B.closeModal()">'
+    +'<div class="modal"><div class="modal-drag"></div>'
+    +'<h3>Nova observação</h3>'
+    +'<div class="mf"><label class="ml" for="obs-txt">Texto</label>'
+    +'<textarea class="mi" id="obs-txt" rows="3" placeholder="Ex: precisamos agendar a weekly do time..." style="resize:none;line-height:1.6"></textarea></div>'
+    +'<div class="mf"><label class="ml" for="obs-au">Autor</label>'
+    +'<select class="msel" id="obs-au"><option>Lele</option><option>Luana</option><option>Pedro</option></select></div>'
+    +'<div class="mf"><label class="ml">Cor</label><div style="display:flex;gap:8px" id="obs-cl">'+colorSwatches+'</div></div>'
+    +'<div class="ma"><button class="mc" onclick="B.closeModal()">Cancelar</button>'
+    +'<button class="mok" style="background:var(--n)" onclick="B._saveObsNote(-1)">Adicionar</button>'
+    +'</div></div></div>');
+};
+B._pickObs = function(c,el){
+  document.querySelectorAll('#obs-cl div').forEach(d=>d.style.borderColor='transparent');
+  el.style.borderColor='var(--tx)';
+};
+B.editObsNote = function(idx){
+  const n=(S.homeObs||[])[idx]; if(!n) return;
+  const colorSwatches=OBS_COLORS.map(c=>
+    '<div style="width:26px;height:26px;border-radius:50%;background:'+c.bg+';cursor:pointer;border:2px solid '+(c.bg===n.color?'var(--tx)':'transparent')+';transition:border-color .15s" onclick="B._pickObs(\''+c.bg+'\',this)" data-c="'+c.bg+'"></div>'
+  ).join('');
+  showModal('<div class="modal-ov" onclick="if(event.target===this)B.closeModal()">'
+    +'<div class="modal"><div class="modal-drag"></div>'
+    +'<h3>Editar observação</h3>'
+    +'<div class="mf"><label class="ml" for="obs-txt">Texto</label>'
+    +'<textarea class="mi" id="obs-txt" rows="3" style="resize:none;line-height:1.6">'+esc(n.texto)+'</textarea></div>'
+    +'<div class="mf"><label class="ml" for="obs-au">Autor</label>'
+    +'<select class="msel" id="obs-au"><option'+(n.autor==='Lele'?' selected':'')+'>Lele</option><option'+(n.autor==='Luana'?' selected':'')+'>Luana</option><option'+(n.autor==='Pedro'?' selected':'')+'>Pedro</option></select></div>'
+    +'<div class="mf"><label class="ml">Cor</label><div style="display:flex;gap:8px" id="obs-cl">'+colorSwatches+'</div></div>'
+    +'<input type="hidden" id="obs-idx" value="'+idx+'">'
+    +'<div class="ma">'
+    +'<button class="mc" style="color:var(--urg);border-color:var(--urgb);margin-right:auto" onclick="B.delObsNote('+idx+');B.closeModal()">Remover</button>'
+    +'<button class="mc" onclick="B.closeModal()">Cancelar</button>'
+    +'<button class="mok" style="background:var(--n)" onclick="B._saveObsNote('+idx+')">Salvar</button>'
+    +'</div></div></div>');
+};
+B.delObsNote = async function(idx){
+  if(!Array.isArray(S.homeObs)) return;
+  S.homeObs.splice(idx,1);
+  await save('Nota removida'); render();
+};
+B._saveObsNote = async function(idx){
+  const texto=(document.getElementById('obs-txt')||{value:''}).value.trim();
+  if(!texto) return;
+  const autor=(document.getElementById('obs-au')||{value:'Lele'}).value;
+  const selCor=document.querySelector('#obs-cl div[style*="var(--tx)"]');
+  const color=selCor?selCor.dataset.c:OBS_COLORS[0].bg;
+  if(!Array.isArray(S.homeObs)) S.homeObs=[];
+  if(idx===-1) S.homeObs.push({id:uid(),texto,autor,color});
+  else if(S.homeObs[idx]) Object.assign(S.homeObs[idx],{texto,autor,color});
+  B.closeModal(); await save('Nota salva ✓'); render();
+};
+
+// ── Edição inline de tarefa — título E datas ─────────────────────────────────
+B.editTaskInline = function(taskId){
+  const t = projTasks('q').find(x=>x.id===taskId);
+  if(!t) return;
+  const title = getTarefaTitle(t);
+  const date  = getTarefaDate(t);
+  const who   = (S.taskEdits&&S.taskEdits[taskId]&&S.taskEdits[taskId].who) || t.who || 'Lele';
+  const stKey = (S.taskStatus||{})[taskId]||'and';
+  const faseAtual = getTarefaFase(t)||'';
+
+  const whoOpts = ['Lele','Luana','Pedro','Lele + Luana','Lele + Pedro','Luana + Pedro','ALL']
+    .map(o=>'<option'+(o===who?' selected':'')+'>'+o+'</option>').join('');
+
+  const faseOpts = '<option value="">— sem fase —</option>'
+    +FASES.map(f=>'<option value="'+f.id+'"'+(f.id===faseAtual?' selected':'')+'>'+f.id+': '+f.label+'</option>').join('');
+
+  const statusOpts = SM_ORDER.map(k=>'<option value="'+k+'"'+(k===stKey?' selected':'')+'>'+SM[k].label+'</option>').join('');
+
+  showModal('<div class="modal-ov" onclick="if(event.target===this)B.closeModal()">'
+    +'<div class="modal"><div class="modal-drag"></div>'
+    +'<h3>Editar tarefa</h3>'
+    +'<div class="mf"><label class="ml" for="et-title">Título</label>'
+      +'<input class="mi" id="et-title" value="'+esc(title)+'"></div>'
+    +'<div class="mf"><label class="ml" for="et-date">Período</label>'
+      +'<input class="mi" id="et-date" value="'+esc(date||'')+'" placeholder="dd/mm ou dd/mm–dd/mm"></div>'
+    +'<div class="mf"><label class="ml" for="et-who">Responsável</label>'
+      +'<select class="msel" id="et-who">'+whoOpts+'</select></div>'
+    +'<div class="mf"><label class="ml" for="et-fase">Fase</label>'
+      +'<select class="msel" id="et-fase">'+faseOpts+'</select></div>'
+    +'<div class="mf"><label class="ml" for="et-status">Status</label>'
+      +'<select class="msel" id="et-status">'+statusOpts+'</select></div>'
+    +'<input type="hidden" id="et-id" value="'+esc(taskId)+'">'
+    +'<div class="ma">'
+      +(t.custom?'<button class="mc" style="color:var(--urg);border-color:var(--urgb);margin-right:auto" onclick="B.delTask(\''+taskId+'\');B.closeModal()">Remover tarefa</button>':'')
+      +'<button class="mc" onclick="B.closeModal()">Cancelar</button>'
+      +'<button class="mok" style="background:var(--n)" onclick="B._saveTaskEdit()">Salvar</button>'
+    +'</div></div></div>');
+};
+
+B._saveTaskEdit = async function(){
+  const id     = (document.getElementById('et-id')||{value:''}).value;
+  const title  = (document.getElementById('et-title')||{value:''}).value.trim();
+  const date   = (document.getElementById('et-date')||{value:''}).value.trim();
+  const who    = (document.getElementById('et-who')||{value:''}).value;
+  const fase   = (document.getElementById('et-fase')||{value:''}).value;
+  const status = (document.getElementById('et-status')||{value:'and'}).value;
+  if(!id||!title) return;
+
+  // Salva edições customizadas (não altera TDEFS)
+  if(!S.taskEdits) S.taskEdits={};
+  if(!S.taskEdits[id]) S.taskEdits[id]={};
+  S.taskEdits[id].title = title;
+  if(date)  S.taskEdits[id].date = date;
+  if(who)   S.taskEdits[id].who  = who;
+  if(fase!==undefined) S.taskEdits[id].fase = fase||null;
+
+  // Atualiza status diretamente no taskStatus
+  if(!S.taskStatus) S.taskStatus={};
+  S.taskStatus[id] = status;
+
+  B.closeModal();
+  await save('Tarefa editada ✓');
+  render();
+};
 
 // Tarefas
 B.toggleTask = async function(id, proj){
@@ -2200,45 +3092,122 @@ B.delTask = async function(id){
 };
 
 // Comentários
-B.toggleCmt = function(id){
-  EC[id]=!EC[id];
-  const wrap=document.getElementById('cmt-'+id);
-  const btn=document.getElementById('expbtn-'+id);
-  if(wrap){ if(EC[id]&&wrap.innerHTML===''){wrap.innerHTML=buildCmts(id);attachEv();} wrap.hidden=!EC[id]; }
-  if(btn){ const cmts=(S.taskComments||{})[id]||[],cnt=cmts.length; btn.textContent=EC[id]?'▴ fechar':'▾ '+(cnt?cnt+' comentário'+(cnt>1?'s':''):'comentários'); btn.className=cnt&&!EC[id]?'exp-btn has-c':'exp-btn'; }
-};
-B.addCmt = async function(taskId){
-  const el=document.getElementById('nc-'+taskId);
-  if(!el||!el.value.trim()) return;
-  if(!S.taskComments) S.taskComments={};
-  if(!S.taskComments[taskId]) S.taskComments[taskId]=[];
-  S.taskComments[taskId].push({id:uid(),text:el.value.trim(),ts:Date.now(),edited:false});
-  el.value=''; el.style.height='auto';
-  await save('Comentário salvo ✓');
-  const wrap=document.getElementById('cmt-'+taskId);
-  if(wrap){wrap.innerHTML=buildCmts(taskId);attachEv();}
-};
-B.delCmt = async function(taskId,cId){
-  if(!S.taskComments||!S.taskComments[taskId]) return;
-  S.taskComments[taskId]=S.taskComments[taskId].filter(c=>c.id!==cId);
-  await save('Comentário removido');
-  const wrap=document.getElementById('cmt-'+taskId);
-  if(wrap){wrap.innerHTML=buildCmts(taskId);attachEv();}
-};
-B.editCmt = function(taskId,cId){
-  const el=document.getElementById('ct-'+cId); if(!el) return;
-  const orig=el.textContent;
-  const inp=document.createElement('textarea');
-  inp.className='cmt-edit-inp'; inp.value=orig; inp.rows=2;
-  el.replaceWith(inp); inp.focus();
-  inp.addEventListener('blur',async function(){
-    const txt=inp.value.trim()||orig;
-    const c=(S.taskComments[taskId]||[]).find(x=>x.id===cId);
-    if(c){c.text=txt;c.edited=true;}
-    await save('Comentário editado');
-    const wrap=document.getElementById('cmt-'+taskId);
-    if(wrap){wrap.innerHTML=buildCmts(taskId);attachEv();}
+B.toggleCmt = function(taskId){
+  EC[taskId] = !EC[taskId];
+
+  // Encontra TODOS os painéis com esse taskId (pode haver em home + tarefas)
+  // Opera em cada um individualmente — sem getElementById global
+  document.querySelectorAll('div[id="cmt-'+taskId+'"]').forEach(wrap=>{
+    if(EC[taskId]){
+      // Popula o painel ao abrir (estava vazio para evitar IDs duplicados)
+      wrap.innerHTML = buildCmts(taskId);
+      wrap.hidden = false;
+    } else {
+      // Ao fechar: esvazia para remover os IDs do DOM
+      wrap.innerHTML = '';
+      wrap.hidden = true;
+    }
   });
+
+  // Atualiza botão de toggle
+  document.querySelectorAll('[id="expbtn-'+taskId+'"]').forEach(btn=>{
+    const cnt = ((S.taskComments||{})[taskId]||[]).length;
+    btn.textContent = EC[taskId]
+      ? '▴ fechar'
+      : '▾ '+(cnt ? cnt+' comentário'+(cnt>1?'s':'') : 'comentários');
+    btn.className = cnt&&!EC[taskId] ? 'exp-btn has-c' : 'exp-btn';
+  });
+};
+
+B.addCmt = async function(taskId){
+  // Busca o textarea dentro do painel ABERTO (não hidden)
+  // Usa querySelector com contexto do painel visível — evita pegar o elemento errado
+  let el = null;
+  document.querySelectorAll('div[id="cmt-'+taskId+'"]').forEach(wrap=>{
+    if(!wrap.hidden){
+      const fKey = taskId.replace(/[^a-z0-9]/gi,'_');
+      const found = wrap.querySelector('#nc-'+fKey) || wrap.querySelector('textarea.cmt-new-inp');
+      if(found) el = found;
+    }
+  });
+
+  if(!el || !el.value.trim()) return;
+
+  // Autor: busca o select no mesmo painel
+  let autor = 'Lele';
+  const fKey = taskId.replace(/[^a-z0-9]/gi,'_');
+  const autorEl = el.closest('.cmt-wrap')
+    ? el.closest('.cmt-wrap').querySelector('#nc-autor-'+fKey) || el.closest('.cmt-wrap').querySelector('select')
+    : null;
+  if(autorEl) autor = autorEl.value;
+
+  if(!S.taskComments) S.taskComments = {};
+  if(!S.taskComments[taskId]) S.taskComments[taskId] = [];
+  S.taskComments[taskId].push({
+    id: uid(), text: el.value.trim(), autor, ts: Date.now(), edited: false
+  });
+
+  el.value = '';
+  el.style.height = 'auto';
+  await save('Comentário salvo ✓');
+
+  // Reconstrói apenas os painéis abertos
+  document.querySelectorAll('div[id="cmt-'+taskId+'"]').forEach(wrap=>{
+    if(!wrap.hidden){
+      wrap.innerHTML = buildCmts(taskId);
+    }
+  });
+
+  // Atualiza contador
+  document.querySelectorAll('[id="expbtn-'+taskId+'"]').forEach(btn=>{
+    const cnt = S.taskComments[taskId].length;
+    btn.textContent = '▴ fechar';
+    btn.className = 'exp-btn has-c';
+  });
+};
+
+B.delCmt = async function(taskId, cId){
+  if(!S.taskComments||!S.taskComments[taskId]) return;
+  if(!confirm('Apagar este comentário?')) return;
+  S.taskComments[taskId] = S.taskComments[taskId].filter(c=>c.id!==cId);
+  await save('Comentário removido');
+  document.querySelectorAll('div[id="cmt-'+taskId+'"]').forEach(wrap=>{
+    if(!wrap.hidden) wrap.innerHTML = buildCmts(taskId);
+  });
+  document.querySelectorAll('[id="expbtn-'+taskId+'"]').forEach(btn=>{
+    const cnt = (S.taskComments[taskId]||[]).length;
+    btn.textContent = cnt ? '▴ fechar' : '▾ comentários';
+    btn.className = cnt ? 'exp-btn has-c' : 'exp-btn';
+  });
+};
+
+B.editCmt = function(taskId, cId){
+  const el = document.getElementById('ct-'+cId);
+  if(!el) return;
+  const orig = el.textContent;
+  const inp = document.createElement('textarea');
+  inp.style.cssText = 'width:100%;font-size:13px;font-family:\'DM Sans\',sans-serif;padding:6px 8px;border-radius:6px;border:0.5px solid var(--n);background:var(--bg);color:var(--tx);outline:none;resize:none;line-height:1.5;box-sizing:border-box;margin-top:2px';
+  inp.value = orig;
+  inp.rows = Math.max(2, orig.split('\n').length);
+  el.replaceWith(inp);
+  inp.focus();
+  inp.setSelectionRange(inp.value.length, inp.value.length);
+
+  async function salvar(){
+    const txt = inp.value.trim()||orig;
+    const c = (S.taskComments[taskId]||[]).find(x=>x.id===cId);
+    if(c){ c.text=txt; c.edited=true; }
+    await save('Comentário editado');
+    document.querySelectorAll('div[id="cmt-'+taskId+'"]').forEach(wrap=>{
+      if(!wrap.hidden) wrap.innerHTML = buildCmts(taskId);
+    });
+  }
+
+  inp.addEventListener('keydown', e=>{
+    if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); salvar(); }
+    if(e.key==='Escape'){ render(); }
+  });
+  inp.addEventListener('blur', ()=>setTimeout(salvar, 150));
 };
 
 // Alertas
@@ -2340,18 +3309,19 @@ B.confirmTask = async function(){
   const proj=(document.getElementById('at-proj')||{value:'q'}).value||'q';
   const title=(document.getElementById('mt-t')||{value:''}).value.trim();
   if(!title){ const e=document.getElementById('mt-e'); if(e) e.textContent='Descreva a tarefa.'; return; }
+  const fase=(document.getElementById('mt-fase')||{value:''}).value||null;
   const who=(document.getElementById('mt-w')||{value:'Lele'}).value;
   const date=(document.getElementById('mt-d')||{value:''}).value.trim();
   const statusVal=(document.getElementById('mt-p')||{value:'and'}).value;
   const by=(document.getElementById('mt-b')||{value:'Lele'}).value;
   const taskId=uid();
-  const task={id:taskId,p:proj,title,who,date:date||'a definir',pri:2,addedBy:by,done:false,custom:true,ts:Date.now()};
+  const task={id:taskId,p:proj,title,fase:fase||null,who,date:date||'a definir',pri:2,addedBy:by,done:false,custom:true,ts:Date.now()};
   if(!S.customTasks) S.customTasks=[];
   S.customTasks.push(task);
   if(!S.taskStatus) S.taskStatus={};
   S.taskStatus[taskId]=statusVal;
   S.updates=S.updates||[];
-  S.updates.push({id:uid(),text:by+' adicionou: "'+title+'" ['+(SM[statusVal]||SM.and).label+']',ts:Date.now()});
+  S.updates.push({id:uid(),text:by+' adicionou: "'+title+'"'+(fase?' ['+fase+']':'')+' ['+(SM[statusVal]||SM.and).label+']',ts:Date.now()});
   B.closeModal(); await save('Tarefa adicionada ✓'); render();
 };
 
@@ -2510,7 +3480,7 @@ B.openAddPostit = function(){
     +'<div class="mf"><label class="ml">Emoji</label><div class="ew" id="pit-em">'+emojiPicker+'</div></div>'
     +'<div class="mf"><label class="ml">Cor</label><div style="display:flex;gap:8px;flex-wrap:wrap" id="pit-cl">'+colorSwatches+'</div></div>'
     +'<div class="mf"><label class="ml" for="pit-txt">Nota</label><textarea class="mi" id="pit-txt" rows="4" placeholder="Escreva sua nota..." style="resize:none;line-height:1.55;"></textarea></div>'
-    +'<div class="mf"><label class="ml" for="pit-au">Autor</label><select class="msel" id="pit-au"><option>Lele</option><option>Luana</option><option>Colaborador</option></select></div>'
+    +'<div class="mf"><label class="ml" for="pit-au">Autor</label><select class="msel" id="pit-au"><option>Lele</option><option>Luana</option><option>Pedro</option></select></div>'
     +'<div class="mf"><label class="ml" for="pit-proj">Projeto</label><select class="msel" id="pit-proj">'+projOpts+'</select></div>'
     +'<div class="merr" id="pit-e"></div>'
     +'<div class="ma"><button class="mc" onclick="B.closeModal()">Cancelar</button>'
@@ -2682,6 +3652,25 @@ CL.saveReuniao = async function(){
 };
 
 // ── Links úteis ───────────────────────────────────────────────────────
+// Emojis sugeridos para links (temáticos e reconhecíveis)
+const LINK_EMOJIS = [
+  {e:'🔗', label:'Link genérico'},
+  {e:'📁', label:'Pasta / Drive'},
+  {e:'📊', label:'Cronograma / Planilha'},
+  {e:'✏️', label:'Edição / Documento'},
+  {e:'📓', label:'Caderno / Notas'},
+  {e:'👥', label:'Pessoas / Equipe'},
+  {e:'📸', label:'Fotos / Imagens'},
+  {e:'🎯', label:'Objetivos'},
+  {e:'📋', label:'Lista / Briefing'},
+  {e:'💬', label:'Comunicação'},
+  {e:'📌', label:'Referência'},
+  {e:'🌐', label:'Site / Web'},
+  {e:'🎨', label:'Design'},
+  {e:'📹', label:'Vídeo / Reunião'},
+  {e:'📄', label:'Documento / PDF'},
+];
+
 CL.addLink = function(){
   CL._openLinkModal(-1,{nome:'',url:'',desc:'',emoji:'🔗'});
 };
@@ -2694,6 +3683,15 @@ CL.delLink = async function(i){
 };
 CL._openLinkModal = function(idx,l){
   const isNew=idx===-1;
+  const curEmoji=l.emoji||'🔗';
+  const emojiPicker=LINK_EMOJIS.map(opt=>
+    '<button type="button" title="'+opt.label+'" onclick="CL._pickLinkEmoji(this)" data-e="'+opt.e+'" style="'
+    +'font-size:22px;background:'+(opt.e===curEmoji?'var(--nl)':'none')+';'
+    +'border:1.5px solid '+(opt.e===curEmoji?'var(--n)':'var(--bd)')+';'
+    +'border-radius:8px;padding:5px 7px;cursor:pointer;transition:border-color .12s,background .12s;line-height:1">'
+    +opt.e+'</button>'
+  ).join('');
+
   showModal('<div class="modal-ov" onclick="if(event.target===this)B.closeModal()">'
     +'<div class="modal"><div class="modal-drag"></div>'
     +'<h3>'+(isNew?'Novo link':'Editar link')+'</h3>'
@@ -2703,8 +3701,9 @@ CL._openLinkModal = function(idx,l){
     +'<input class="mi" id="cl-lurl" type="url" placeholder="https://..." value="'+esc(l.url||'')+'"></div>'
     +'<div class="mf"><label class="ml" for="cl-ldesc">Para que serve (opcional)</label>'
     +'<input class="mi" id="cl-ldesc" placeholder="Ex: Pasta com todos os materiais do projeto" value="'+esc(l.desc||'')+'"></div>'
-    +'<div class="mf"><label class="ml" for="cl-lemoji">Ícone (emoji)</label>'
-    +'<input class="mi" id="cl-lemoji" placeholder="Ex: 📁 📊 🎯" value="'+esc(l.emoji||'🔗')+'" style="width:80px"></div>'
+    +'<div class="mf"><label class="ml">Ícone</label>'
+    +'<div id="cl-emoji-picker" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">'+emojiPicker+'</div></div>'
+    +'<input type="hidden" id="cl-lemoji" value="'+esc(curEmoji)+'">'
     +'<input type="hidden" id="cl-lidx" value="'+idx+'">'
     +'<div class="merr" id="cl-lerr"></div>'
     +'<div class="ma">'
@@ -2713,11 +3712,20 @@ CL._openLinkModal = function(idx,l){
     +'<button class="mok" style="background:var(--n)" onclick="CL.saveLink()">Salvar</button>'
     +'</div></div></div>');
 };
+CL._pickLinkEmoji = function(btn){
+  // Deseleciona todos, seleciona o clicado
+  document.querySelectorAll('#cl-emoji-picker button').forEach(b=>{
+    b.style.background='none'; b.style.borderColor='var(--bd)';
+  });
+  btn.style.background='var(--nl)'; btn.style.borderColor='var(--n)';
+  const h=document.getElementById('cl-lemoji');
+  if(h) h.value=btn.dataset.e;
+};
 CL.saveLink = async function(){
   const nome=(document.getElementById('cl-lnome')||{value:''}).value.trim();
   const url=(document.getElementById('cl-lurl')||{value:''}).value.trim();
   const desc=(document.getElementById('cl-ldesc')||{value:''}).value.trim();
-  const emoji=(document.getElementById('cl-lemoji')||{value:'🔗'}).value.trim()||'🔗';
+  const emoji=(document.getElementById('cl-lemoji')||{value:'🔗'}).value||'🔗';
   const idx=parseInt((document.getElementById('cl-lidx')||{value:'-1'}).value);
   if(!nome||!url){const e=document.getElementById('cl-lerr');if(e)e.textContent='Nome e URL são obrigatórios.';return;}
   if(!url.startsWith('http')){const e=document.getElementById('cl-lerr');if(e)e.textContent='URL deve começar com https://';return;}
@@ -2811,7 +3819,43 @@ function doArchive(id,name,emoji,color,fixed){
 
 // Auto-resize de textareas
 function ar(el){ el.style.height='auto'; el.style.height=el.scrollHeight+'px'; }
-function attachEv(){ document.querySelectorAll('textarea').forEach(el=>{ if(el.value){ el.style.height='auto'; el.style.height=el.scrollHeight+'px'; } }); }
+function attachEv(){
+  // Auto-resize de textareas existentes
+  document.querySelectorAll('textarea').forEach(el=>{
+    if(el.value){ el.style.height='auto'; el.style.height=el.scrollHeight+'px'; }
+  });
+}
+
+// ── Delegação de eventos global para comentários ──────────────────────────
+// Registrado UMA vez no document — funciona para qualquer elemento dinâmico.
+// Evita problemas de escaping de aspas no onclick.
+document.addEventListener('click', function(e){
+  const btn = e.target.closest('[data-action]');
+  if(!btn) return;
+  const action = btn.dataset.action;
+  const taskId = btn.dataset.task;
+  const cmtId  = btn.dataset.cmt;
+
+  if(action==='addcmt' && taskId){
+    e.preventDefault();
+    B.addCmt(taskId);
+  } else if(action==='editcmt' && taskId && cmtId){
+    e.preventDefault();
+    B.editCmt(taskId, cmtId);
+  } else if(action==='delcmt' && taskId && cmtId){
+    e.preventDefault();
+    B.delCmt(taskId, cmtId);
+  }
+});
+
+// Enter no textarea de comentário
+document.addEventListener('keydown', function(e){
+  if(e.key!=='Enter'||e.shiftKey) return;
+  const ta = e.target.closest('textarea.cmt-new-inp');
+  if(!ta) return;
+  const taskId = ta.dataset.task;
+  if(taskId){ e.preventDefault(); B.addCmt(taskId); }
+});
 
 // Inicia tudo
 init();
